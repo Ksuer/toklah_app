@@ -50,6 +50,18 @@ public class EventController {
 		return new ResponseEntity<>(eventServiceImp.getAllEvent(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllRegEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/getevent/{eventId}",  method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> getEvent(@PathVariable int eventId) throws NotFoundException {

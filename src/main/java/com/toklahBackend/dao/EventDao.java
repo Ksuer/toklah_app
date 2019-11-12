@@ -16,4 +16,10 @@ public interface EventDao extends CrudRepository <Event, Integer>{
 	@Query("SELECT e FROM Event e where e.eventTitle Like %?1")
 	List<Event> searchByWord(@Param("word") String word);
 	
+	@Query("SELECT e FROM Event e  where e.isVolunteering = true")
+	List<Event> getAllVolunteerEvent();
+	
+	@Query("SELECT e FROM Event e where e.isVolunteering = false")
+	List<Event> getAllRegEvent();
+	
 }

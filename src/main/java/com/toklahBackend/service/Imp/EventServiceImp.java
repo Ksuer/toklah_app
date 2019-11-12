@@ -24,6 +24,11 @@ public class EventServiceImp implements EventService{
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId) {
 		Event newEvent= new Event();
+		newEvent = event;
+		if(event.getEventReward() == 0) {
+			newEvent.setIsVolunteering(true);
+		}
+		newEvent.setIsPremium(false);
 		switch(typeId) {
 		case 1: newEvent.setEventType(EventType.EVENT);
 		case 2: newEvent.setEventType(EventType.ART);
@@ -41,7 +46,7 @@ public class EventServiceImp implements EventService{
 		case 4: newEvent.setEventTargetGroup(EventTarget.MALE);
 		default:
 		}
-		newEvent = event;
+		
 		eventDao.save(newEvent);
 		return newEvent;
 	}
@@ -50,7 +55,17 @@ public class EventServiceImp implements EventService{
 	public List<Event> getAllEvent() {
 		return (List<Event>) eventDao.findAll();
 	}
-
+	
+	@Override
+	public List<Event> getAllVolunteerEvent() {
+		return eventDao.getAllVolunteerEvent();
+	}
+	
+	@Override
+	public List<Event> getAllRegEvent() {
+		return eventDao.getAllRegEvent();
+	}
+	
 	@Override
 	public Event getEvent(int eventId) throws NotFoundException {
 		Event event = eventDao.findOne(eventId);
