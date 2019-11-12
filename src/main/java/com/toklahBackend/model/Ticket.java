@@ -36,12 +36,13 @@ public class Ticket {
 	private String name; //eventName
 	private String eventType;
 	private Date date;
-	private Time startTime;
-	private Time endTime;
+	private String startTime;
+	private String endTime;
 	private String mobileNumber;
 	private float eventReward;
+	private Boolean isCanceled;
 	
-	public Ticket(String name, Date date, Time startTime, Time endTime, String mobileNumber,
+	public Ticket(String name, Date date, String startTime, String endTime, String mobileNumber,
 			float eventReward) {
 		super();
 		this.name = name;
@@ -51,19 +52,4 @@ public class Ticket {
 		this.mobileNumber = mobileNumber;
 		this.eventReward = eventReward;
 	}
-
-	public int getTicketNumber() {
-		return ticketNumber;
-	}
-
-	public void setTicketNumber(int ticketNumber) {
-		this.ticketNumber = ticketNumber;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-
-
 }

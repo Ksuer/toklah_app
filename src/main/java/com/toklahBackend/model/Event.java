@@ -5,12 +5,17 @@ import java.sql.Time;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.toklahBackend.unit.EventTarget;
+import com.toklahBackend.unit.EventType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,19 +30,19 @@ public class Event {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int eventId;
 	private String eventTitle;
-	private String eventType;
-	private String eventTargetGroup;
-	private String eventLocation;
+	@Enumerated(EnumType.STRING)
+	private EventType eventType;
+	@Enumerated(EnumType.STRING)
+	private EventTarget eventTargetGroup;
+	private Double lat;
+	private Double lng;
+	private String eventImage;
 	private Date eventDate;
-	private Time eventStartTime;
-	private Time eventEndtTime;
+	private String eventStartTime;
+	private String eventEndtTime;
 	private int eventOrganizerNumber;
 	private float eventReward;
 	private String eventSummary;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "company")
-    private Company company;
-	
-	
+	private Boolean isVolunteering;
+
 }

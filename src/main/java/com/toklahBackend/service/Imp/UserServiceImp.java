@@ -201,12 +201,12 @@ public class UserServiceImp implements UserService{
 		Event event = eventDao.findOne(eventId);
 		Ticket myTicket = new Ticket(event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
 		
-		if (event.getEventType().toLowerCase().equals("organizing"))
+		if (event.getIsVolunteering() == false)
 		{
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber()+1);
 		}
 		
-		if (event.getEventType().toLowerCase().equals("volunteering"))
+		if (event.getIsVolunteering() == true)
 		{
 			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber()+1);
 		}
@@ -229,7 +229,8 @@ public class UserServiceImp implements UserService{
 	@Override
 	public void deleteTicket(int userId, int ticketId) {
 		Ticket ticket= ticketDao.findOne(ticketId);
-		ticketDao.delete(ticket);                 /*a foreign key constraint fails*/
+		ticket.setIsCanceled(true);  
+		ticketDao.save(ticket);          
 	}
 
 	@Override

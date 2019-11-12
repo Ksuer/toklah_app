@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.toklahBackend.dao.CompanyDao;
 import com.toklahBackend.dao.EventDao;
-import com.toklahBackend.model.Company;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.service.EventService;
+import com.toklahBackend.unit.EventTarget;
+import com.toklahBackend.unit.EventType;
 
 import javassist.NotFoundException;
 
@@ -19,18 +19,29 @@ public class EventServiceImp implements EventService{
 
 	@Autowired
 	EventDao eventDao;
-	
-	@Autowired
-	CompanyDao companyDao;
+
 	
 	@Override
-	public Event addEvent(Event event, int companyId) {
-		
-		Company company = companyDao.findOne(companyId);
-
+	public Event addEvent(Event event, int targetId, int typeId) {
 		Event newEvent= new Event();
+		switch(typeId) {
+		case 1: newEvent.setEventType(EventType.EVENT);
+		case 2: newEvent.setEventType(EventType.ART);
+		case 3:	newEvent.setEventType(EventType.MUSIC);
+		case 4: newEvent.setEventType(EventType.MUSIC_EVENT);
+		case 5: newEvent.setEventType(EventType.EDICATION);
+		case 6: newEvent.setEventType(EventType.OTHER);
+		default:
+		}
+		
+		switch(targetId) {
+		case 1: newEvent.setEventTargetGroup(EventTarget.CHILDREN);
+		case 2: newEvent.setEventTargetGroup(EventTarget.FMAILY);
+		case 3:	newEvent.setEventTargetGroup(EventTarget.FEMALE);
+		case 4: newEvent.setEventTargetGroup(EventTarget.MALE);
+		default:
+		}
 		newEvent = event;
-		newEvent.setCompany(company);
 		eventDao.save(newEvent);
 		return newEvent;
 	}
