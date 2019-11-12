@@ -8,7 +8,7 @@ import javassist.NotFoundException;
 
 public interface EventService {
 
-	Event addEvent(Event event, int companyId);
+	Event addEvent(Event event, int targetId, int typeId);
 
 	List<Event> getAllEvent();
 
