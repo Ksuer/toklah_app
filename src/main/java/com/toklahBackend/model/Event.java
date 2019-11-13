@@ -45,5 +45,6 @@ public class Event {
 	private String eventSummary;
 	private Boolean isVolunteering;
 	private Boolean isPremium;
+	private Boolean isValid;
 
 }

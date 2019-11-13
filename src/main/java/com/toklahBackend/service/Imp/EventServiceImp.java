@@ -29,6 +29,7 @@ public class EventServiceImp implements EventService{
 			newEvent.setIsVolunteering(true);
 		}
 		newEvent.setIsPremium(false);
+//		newEvent.setIsValid(false); // in production
 		switch(typeId) {
 		case 1: newEvent.setEventType(EventType.EVENT);
 		case 2: newEvent.setEventType(EventType.ART);
