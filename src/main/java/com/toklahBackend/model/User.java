@@ -48,6 +48,7 @@ public class User {
 	private String t_shirtSize;
 	private String ibanNumber;
 	private String language;
+	private String skill;
 	private String aboutMe;
 	private int organizingEventNumber;
 	private int volunteeringEventNumber;

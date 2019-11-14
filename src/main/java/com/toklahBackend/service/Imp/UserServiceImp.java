@@ -195,25 +195,33 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public Ticket addTicket(int userId, int eventId) {
+	public Ticket addTicket(int userId, int eventId) throws Exception {
 
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
-		Ticket myTicket= new Ticket(event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
+		Ticket myTicket= new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
 		
-		if (event.getEventType().toLowerCase().equals("organizing"))
+		List<Ticket> userTickets= ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		
+		if (userTickets!=null)
 		{
-			user.setOrganizingEventNumber(user.getOrganizingEventNumber()+1);
+			throw new Exception("You have ticket for this event");
+		} 
+		else{
+			if (event.getEventType().toLowerCase().equals("organizing"))
+			{
+				user.setOrganizingEventNumber(user.getOrganizingEventNumber()+1);
+			}
+			
+			if (event.getEventType().toLowerCase().equals("volunteering"))
+			{
+				user.setVolunteeringEventNumber(user.getVolunteeringEventNumber()+1);
+			}
+			
+			myTicket.setUser(user);
+			ticketDao.save(myTicket);
+			return myTicket;
 		}
-		
-		if (event.getEventType().toLowerCase().equals("volunteering"))
-		{
-			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber()+1);
-		}
-		
-		myTicket.setUser(user);
-		ticketDao.save(myTicket);
-		return myTicket;
 	}
 
 	@Override

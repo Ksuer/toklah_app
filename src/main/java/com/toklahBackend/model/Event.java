@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,9 +31,13 @@ public class Event {
 	private float eventReward;
 	private String eventSummary;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "company")
-    private Company company;
+	private String companyName;
+	private String companyActivityType;
+	private int companyCrNumber;
+	@Column(unique = true)
+	private String companyEmail;
+	private String contactNumber1;
+	private String contactNumber2;
 	
 	public Event() {
 
@@ -122,12 +127,4 @@ public class Event {
 		this.eventSummary = eventSummary;
 	}
 
-	public Company getCompany() {
-		return company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
-	}
-	
 }

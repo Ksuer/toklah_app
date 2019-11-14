@@ -100,13 +100,13 @@ public class UserController {
 
 	@RequestMapping(value = "{userId}/{eventId}/registertoEvent", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) {	
+	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) throws Exception {	
 		Ticket myticket = userServiceImp.addTicket(userId,eventId);
 		return new ResponseEntity<Ticket>(myticket, responseHeaders, HttpStatus.CREATED);
 	
 	}
 	
-	@RequestMapping(value = "/{userId}/getAllTickets/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/getAllTickets", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable) throws NotFoundException {
 		

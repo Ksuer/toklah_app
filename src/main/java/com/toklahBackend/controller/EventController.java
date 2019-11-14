@@ -35,7 +35,7 @@ public class EventController {
 
 	HttpHeaders responseHeaders = new HttpHeaders();
 	
-	@RequestMapping(value = "{companyId}/addEvent", method = RequestMethod.POST)
+	@RequestMapping(value = "{typeId}/{targetId}/addEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Event> addEvent(@RequestBody Event event, @PathVariable int companyId) {	
 		Event myEvent = eventServiceImp.addEvent(event,companyId);

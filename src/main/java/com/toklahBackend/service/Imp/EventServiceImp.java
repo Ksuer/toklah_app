@@ -30,7 +30,6 @@ public class EventServiceImp implements EventService{
 
 		Event newEvent= new Event();
 		newEvent = event;
-		newEvent.setCompany(company);
 		eventDao.save(newEvent);
 		return newEvent;
 	}
