@@ -7,7 +7,7 @@ import com.toklahBackend.model.Event;
 import javassist.NotFoundException;
 
 public interface EventService {
-
+	
 	Event addEvent(Event event, int targetId, int typeId);
 
 	List<Event> getAllEvent();

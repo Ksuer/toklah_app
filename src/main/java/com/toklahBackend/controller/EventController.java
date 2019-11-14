@@ -34,12 +34,13 @@ public class EventController {
 	}
 
 	HttpHeaders responseHeaders = new HttpHeaders();
-	
-	@RequestMapping(value = "/addEvent/{typeId}/ {targetId}", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/{typeId}/{targetId}/addEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Event> addEvent(@RequestBody Event event, @PathVariable int targetId,
 			@PathVariable int typeId) {	
 		Event myEvent = eventServiceImp.addEvent(event, targetId, typeId);
+
 		return new ResponseEntity<Event>(myEvent, responseHeaders, HttpStatus.CREATED);
 	
 	}

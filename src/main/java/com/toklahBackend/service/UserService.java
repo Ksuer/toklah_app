@@ -24,8 +24,8 @@ public interface UserService {
 
 	User getUser(int userId) throws NotFoundException;
 
-	Ticket addTicket(int userId, int eventId);
-
+	Ticket addTicket(int userId, int eventId) throws Exception;
+	
 	Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) throws NotFoundException;
 
 	void deleteTicket(int userId, int ticketId);

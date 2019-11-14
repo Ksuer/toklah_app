@@ -78,7 +78,7 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "{userId}/editUser", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{userId}/editUser", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> editaccount(@PathVariable int userId, @RequestBody  User user) throws Exception {
 		return new ResponseEntity<>(userServiceImp.editUser(userId, user), HttpStatus.OK);
@@ -98,15 +98,15 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "{userId}/{eventId}/registertoEvent", method = RequestMethod.POST)
+	@RequestMapping(value = "/{userId}/{eventId}/registertoEvent", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) {	
+	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) throws Exception {	
 		Ticket myticket = userServiceImp.addTicket(userId,eventId);
 		return new ResponseEntity<Ticket>(myticket, responseHeaders, HttpStatus.CREATED);
 	
 	}
-	
-	@RequestMapping(value = "/{userId}/getAllTickets/", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/{userId}/getAllTickets", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable) throws NotFoundException {
 		
@@ -114,7 +114,7 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "/{userId}/getOrganizingEventNumber/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/getOrganizingEventNumber", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> getOrganizingEvent(@PathVariable int userId) {
 		
@@ -122,7 +122,7 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "/{userId}/getVolunteeringEventNumber/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/getVolunteeringEventNumber", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> getVolunteeringEvent(@PathVariable int userId) {
 		
@@ -130,7 +130,7 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "{userId}/{ticketId}/deleteTicket", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{userId}/{ticketId}/deleteTicket", method = RequestMethod.DELETE)
 	@Transactional
 	public void Ticket(@PathVariable int userId, @PathVariable int ticketId) {	
 		userServiceImp.deleteTicket(userId,ticketId);

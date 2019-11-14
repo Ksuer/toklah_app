@@ -19,8 +19,6 @@ public class EventServiceImp implements EventService{
 
 	@Autowired
 	EventDao eventDao;
-
-	
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId) {
 		Event newEvent= new Event();
@@ -41,6 +39,7 @@ public class EventServiceImp implements EventService{
 		case 4: newEvent.setEventTargetGroup(EventTarget.MALE);
 		default:
 		}
+		
 		newEvent = event;
 		eventDao.save(newEvent);
 		return newEvent;

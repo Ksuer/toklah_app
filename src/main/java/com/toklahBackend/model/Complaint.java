@@ -1,7 +1,6 @@
 package com.toklahBackend.model;
 
 import java.sql.Date;
-import java.sql.Time;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,13 +12,13 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
+
 @EnableJpaAuditing
 @Entity
 @Table(name = "TOKLAH_COMPLAINT")
@@ -37,5 +36,4 @@ public class Complaint {
 	@Column(name = "creationDate")
 	private Date creationDate;
 
-	
 }

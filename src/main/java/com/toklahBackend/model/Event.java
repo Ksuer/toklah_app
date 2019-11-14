@@ -7,13 +7,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.toklahBackend.unit.EventTarget;
 import com.toklahBackend.unit.EventType;
 
@@ -44,5 +45,14 @@ public class Event {
 	private float eventReward;
 	private String eventSummary;
 	private Boolean isVolunteering;
+	private String eventLocation;
 
+	
+	private String companyName;
+	private String companyActivityType;
+	private int companyCrNumber;
+	private String companyEmail;
+	private String contactNumber1;
+	private String contactNumber2;
+		
 }

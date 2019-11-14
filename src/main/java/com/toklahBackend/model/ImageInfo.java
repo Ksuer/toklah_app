@@ -1,8 +1,8 @@
 package com.toklahBackend.model;
 
+
 import java.sql.Date;
 import java.sql.Time;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +11,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +31,7 @@ public class ImageInfo {
 
 	@OneToOne
 	private User user;
-
+	
 	public ImageInfo(String fileName, String fileType, String fileUri , User user) {
 		this.fileName = fileName;
 	    this.fileType = fileType;

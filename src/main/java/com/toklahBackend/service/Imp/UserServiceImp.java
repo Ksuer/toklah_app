@@ -195,12 +195,16 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public Ticket addTicket(int userId, int eventId) {
+	public Ticket addTicket(int userId, int eventId) throws Exception {
 
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
-		Ticket myTicket = new Ticket(event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
-		
+		Ticket myTicket= new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
+		List<Ticket> userTickets= ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		if (userTickets!=null)
+		{
+			throw new Exception("You have ticket for this event");
+		} 
 		if (event.getIsVolunteering() == false)
 		{
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber()+1);
@@ -230,7 +234,7 @@ public class UserServiceImp implements UserService{
 	public void deleteTicket(int userId, int ticketId) {
 		Ticket ticket= ticketDao.findOne(ticketId);
 		ticket.setIsCanceled(true);  
-		ticketDao.save(ticket);          
+		ticketDao.save(ticket); 
 	}
 
 	@Override
