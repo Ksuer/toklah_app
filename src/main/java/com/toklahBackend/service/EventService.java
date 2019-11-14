@@ -16,4 +16,8 @@ public interface EventService {
 
 	List<Event> search(String word);
 
+	List<Event> getAllVolunteerEvent();
+
+	List<Event> getAllRegEvent();
+
 }

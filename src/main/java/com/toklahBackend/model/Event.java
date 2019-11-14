@@ -45,8 +45,8 @@ public class Event {
 	private float eventReward;
 	private String eventSummary;
 	private Boolean isVolunteering;
-	private String eventLocation;
-
+	private Boolean isPremium;
+	private Boolean isValid;
 	
 	private String companyName;
 	private String companyActivityType;

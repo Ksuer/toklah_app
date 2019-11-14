@@ -67,5 +67,17 @@ public class EventController {
 	public ResponseEntity<?> search(@Param("word") String word) {
 			return new ResponseEntity<>(eventServiceImp.search(word), responseHeaders, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllRegEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
+	}
 
 }

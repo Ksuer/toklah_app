@@ -17,7 +17,7 @@ public interface TicketDao extends CrudRepository <Ticket, Integer> {
 	Page<Ticket> getTicketbyUserId(@Param("userId") int userId, Pageable pageable);
 
 
-	@Query("SELECT t FROM Ticket t  where t.user= :userId and t.eventId= :eventId")
-	List<Ticket> getTicketbyUserAndEvent(int userId, int eventId);
+	@Query("SELECT t FROM Ticket t  where t.user.userId= :userId and t.eventId= :eventId")
+	List<Ticket> getTicketbyUserAndEvent(@Param("userId")int userId,@Param("eventId") int eventId);
 
 }

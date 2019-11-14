@@ -22,6 +22,15 @@ public class EventServiceImp implements EventService{
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId) {
 		Event newEvent= new Event();
+		newEvent = event;
+		if(event.getEventReward() == 0) {
+			newEvent.setIsVolunteering(true);
+		}else {
+			newEvent.setIsVolunteering(false);
+		}
+		newEvent.setIsPremium(false);
+		newEvent.setIsValid(true); // in production false 
+		
 		switch(typeId) {
 		case 1: newEvent.setEventType(EventType.EVENT);
 		case 2: newEvent.setEventType(EventType.ART);
@@ -34,13 +43,12 @@ public class EventServiceImp implements EventService{
 		
 		switch(targetId) {
 		case 1: newEvent.setEventTargetGroup(EventTarget.CHILDREN);
-		case 2: newEvent.setEventTargetGroup(EventTarget.FMAILY);
+		case 2: newEvent.setEventTargetGroup(EventTarget.FAMELY);
 		case 3:	newEvent.setEventTargetGroup(EventTarget.FEMALE);
 		case 4: newEvent.setEventTargetGroup(EventTarget.MALE);
 		default:
 		}
 		
-		newEvent = event;
 		eventDao.save(newEvent);
 		return newEvent;
 	}
@@ -60,6 +68,16 @@ public class EventServiceImp implements EventService{
 		}
 	}
 
+
+	@Override
+	public List<Event> getAllVolunteerEvent() {
+		return eventDao.getAllVolunteerEvent();
+	}
+	
+	@Override
+	public List<Event> getAllRegEvent() {
+		return eventDao.getAllRegEvent();
+	}
 
 	@Override
 	public List<Event> search(String word) {
