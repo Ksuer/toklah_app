@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class Ticket {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user")
 	private User user;
-	
+	private int eventId;
 	private String name; //eventName
 	private String eventType;
 	private Date date;
@@ -41,10 +42,12 @@ public class Ticket {
 	private String mobileNumber;
 	private float eventReward;
 	private Boolean isCanceled;
-	
-	public Ticket(String name, Date date, String startTime, String endTime, String mobileNumber,
+
+	public Ticket(int eventId, String name, Date date, String startTime, String endTime, String mobileNumber,
+
 			float eventReward) {
 		super();
+		this.eventId = eventId;
 		this.name = name;
 		this.date = date;
 		this.startTime = startTime;

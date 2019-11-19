@@ -4,15 +4,12 @@ import java.util.List;
 
 import com.toklahBackend.model.Event;
 
-import javassist.NotFoundException;
-
 public interface EventService {
-
-	Event addEvent(Event event, int targetId, int typeId);
+	Event addEvent(Event event, int targetId, int typeId) ;
 
 	List<Event> getAllEvent();
 
-	Event getEvent(int eventId) throws NotFoundException;
+	Event getEvent(int eventId) ;
 
 	List<Event> search(String word);
 

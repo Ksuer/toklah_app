@@ -1,5 +1,6 @@
 package com.toklahBackend.model;
 
+
 import java.sql.Date;
 import java.sql.Time;
 
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +37,14 @@ public class Admin {
 	private String email;
 	@Column(unique = true)
 	private String mobile;
-	
+
+
+	public Admin(int adminId, String password, String email, String mobile) {
+		super();
+		this.adminId = adminId;
+		this.password = password;
+		this.email = email;
+		this.mobile = mobile;
+	}
+
 }

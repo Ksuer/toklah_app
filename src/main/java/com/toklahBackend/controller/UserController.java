@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
@@ -78,7 +80,7 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "{userId}/editUser", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{userId}/editUser", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> editaccount(@PathVariable int userId, @RequestBody  User user) throws Exception {
 		return new ResponseEntity<>(userServiceImp.editUser(userId, user), HttpStatus.OK);
@@ -98,15 +100,15 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "{userId}/{eventId}/registertoEvent", method = RequestMethod.POST)
+	@RequestMapping(value = "/{userId}/{eventId}/registertoEvent", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) {	
+	public ResponseEntity<Ticket> addTicket(@PathVariable int userId, @PathVariable int eventId) throws Exception {	
 		Ticket myticket = userServiceImp.addTicket(userId,eventId);
 		return new ResponseEntity<Ticket>(myticket, responseHeaders, HttpStatus.CREATED);
 	
 	}
-	
-	@RequestMapping(value = "/{userId}/getAllTickets/", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/{userId}/getAllTickets", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable) throws NotFoundException {
 		
@@ -114,7 +116,7 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "/{userId}/getOrganizingEventNumber/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/getOrganizingEventNumber", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> getOrganizingEvent(@PathVariable int userId) {
 		
@@ -122,7 +124,7 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "/{userId}/getVolunteeringEventNumber/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/getVolunteeringEventNumber", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> getVolunteeringEvent(@PathVariable int userId) {
 		
@@ -130,11 +132,18 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value = "{userId}/{ticketId}/deleteTicket", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{userId}/{ticketId}/deleteTicket", method = RequestMethod.DELETE)
 	@Transactional
 	public void Ticket(@PathVariable int userId, @PathVariable int ticketId) {	
 		userServiceImp.deleteTicket(userId,ticketId);
 	
 	}
+	
+	/*@RequestMapping(value ="/{userId}/addimage",  method = RequestMethod.POST, consumes = "multipart/form-data" ,
+            produces = { "application/json", "application/xml" })
+	@ResponseBody
+	public ResponseEntity<?> addimage(@PathVariable int userId, @RequestParam("file") List<MultipartFile> file) {
+			return new ResponseEntity<>(userServiceImp.addImage(file, userId), responseHeaders, HttpStatus.OK);
+	}*/
 	
 }

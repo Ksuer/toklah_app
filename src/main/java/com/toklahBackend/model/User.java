@@ -56,6 +56,8 @@ public class User {
 	private String t_shirtSize;
 	private String ibanNumber;
 	private String language;
+	private String skill;
+	private String token;
 	private String aboutMe;
 	private int organizingEventNumber;
 	private int volunteeringEventNumber;
@@ -68,12 +70,11 @@ public class User {
 	@Column(name = "creationdate")
 	private Date creationdate;
 
-	@OneToOne
-	private ImageInfo userImage;
+	private String userImage;
 	
 	@OneToMany(mappedBy = "user",targetEntity = Ticket.class, cascade =CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ticketNumber")
 	@JsonIgnore
     private Set <Ticket> ticket;
-	
+
 }

@@ -34,12 +34,15 @@ public class EventController {
 	}
 
 	HttpHeaders responseHeaders = new HttpHeaders();
-	
-	@RequestMapping(value = "/addEvent/{typeId}/ {targetId}", method = RequestMethod.POST)
+
+
+	@RequestMapping(value = "/{typeId}/{targetId}/addEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Event> addEvent(@RequestBody Event event, @PathVariable int targetId,
-			@PathVariable int typeId) {	
+			@PathVariable int typeId) throws Exception {	
 		Event myEvent = eventServiceImp.addEvent(event, targetId, typeId);
+
+
 		return new ResponseEntity<Event>(myEvent, responseHeaders, HttpStatus.CREATED);
 	
 	}
@@ -77,6 +80,18 @@ public class EventController {
 	@ResponseBody
 	public ResponseEntity<?> search(@Param("word") String word) {
 			return new ResponseEntity<>(eventServiceImp.search(word), responseHeaders, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllRegEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
 	}
 
 }

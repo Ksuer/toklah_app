@@ -1,6 +1,8 @@
 package com.toklahBackend.model;
 
+
 import java.sql.Date;
+import java.sql.Time;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,22 +20,28 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-
 @EnableJpaAuditing
 @Entity
-@Table(name = "TOKLAH_COMPLAINT")
-public class Complaint {
+@Table(name = "TOKLAH_IMAGE")
+public class UserImage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int complainId;
-	private String complainText;
-	
+	private int imageId;
+	private String fileName;
+	private String fileUri;
+
 	@OneToOne
 	private User user;
 	
 	@CreationTimestamp
-	@Column(name = "creationDate")
-	private Date creationDate;
+	@Column(name = "creationdate")
+	private Date creationdate;
+	
+	public UserImage(String fileName , String fileUri , User user) {
+		this.fileName = fileName;
+	    this.fileUri = fileUri;
+	    this.user= user;
+	}
 
 }

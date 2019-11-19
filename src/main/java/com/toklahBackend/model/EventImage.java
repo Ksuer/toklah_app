@@ -1,16 +1,22 @@
 package com.toklahBackend.model;
 
 import java.sql.Date;
-import java.sql.Time;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,24 +26,26 @@ import lombok.Setter;
 @NoArgsConstructor
 @EnableJpaAuditing
 @Entity
-@Table(name = "TOKLAH_IMAGE")
-public class ImageInfo {
-
+@Table(name = "TOKLAH_EVENTIMAGE")
+public class EventImage {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int imageId;
+	
 	private String fileName;
-	private String fileType;
 	private String fileUri;
-
 	@OneToOne
-	private User user;
-
-	public ImageInfo(String fileName, String fileType, String fileUri , User user) {
+	private Event event;
+	
+	public EventImage(String fileName , String fileUri ,Event event) {
 		this.fileName = fileName;
-	    this.fileType = fileType;
 	    this.fileUri = fileUri;
-	    this.user= user;
+	    this.event= event;
 	}
+	
+	@CreationTimestamp
+	@Column(name = "creationdate")
+	private Date creationdate;
 
 }
