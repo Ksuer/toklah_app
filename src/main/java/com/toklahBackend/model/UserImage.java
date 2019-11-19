@@ -20,21 +20,19 @@ import lombok.Setter;
 @EnableJpaAuditing
 @Entity
 @Table(name = "TOKLAH_IMAGE")
-public class ImageInfo {
+public class UserImage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int imageId;
 	private String fileName;
-	private String fileType;
 	private String fileUri;
 
 	@OneToOne
 	private User user;
 	
-	public ImageInfo(String fileName, String fileType, String fileUri , User user) {
+	public UserImage(String fileName , String fileUri , User user) {
 		this.fileName = fileName;
-	    this.fileType = fileType;
 	    this.fileUri = fileUri;
 	    this.user= user;
 	}

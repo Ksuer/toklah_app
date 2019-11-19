@@ -14,27 +14,27 @@ import javassist.NotFoundException;
 
 public interface UserService {
 
-	User register(User user) throws Exception;
+	User register(User user);
 
-	User login(Login login) throws Exception;
+	User login(Login login);
 
-	User editUser(int userId, User user) throws Exception;
+	User editUser(int userId, User user);
 
 	List<User> getAllUser();
 
-	User getUser(int userId) throws NotFoundException;
+	User getUser(int userId);
 
-	Ticket addTicket(int userId, int eventId) throws Exception;
+	Ticket addTicket(int userId, int eventId);
 	
-	Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) throws NotFoundException;
+	Page<Ticket> getticketsByUseryId(int userId, Pageable pageable);
 
 	void deleteTicket(int userId, int ticketId);
 
-	void changePassword(String password, int userId) throws NotFoundException;
+	void changePassword(String password, int userId);
 
 	//void restorePassword(String oldPassword, String newPassword, int userId) throws NotFoundException, Exception;
 
-	void emailchangePassword(SentEmail email) throws NotFoundException, Exception;
+	void emailchangePassword(SentEmail email);
 
 	int getOrganizingEvent(int userId);
 

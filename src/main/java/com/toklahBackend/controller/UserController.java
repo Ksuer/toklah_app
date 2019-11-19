@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
@@ -136,5 +138,12 @@ public class UserController {
 		userServiceImp.deleteTicket(userId,ticketId);
 	
 	}
+	
+	/*@RequestMapping(value ="/{userId}/addimage",  method = RequestMethod.POST, consumes = "multipart/form-data" ,
+            produces = { "application/json", "application/xml" })
+	@ResponseBody
+	public ResponseEntity<?> addimage(@PathVariable int userId, @RequestParam("file") List<MultipartFile> file) {
+			return new ResponseEntity<>(userServiceImp.addImage(file, userId), responseHeaders, HttpStatus.OK);
+	}*/
 	
 }

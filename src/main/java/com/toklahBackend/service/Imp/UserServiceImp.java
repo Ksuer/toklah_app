@@ -8,11 +8,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.dao.EventDao;
 import com.toklahBackend.dao.TicketDao;
 import com.toklahBackend.dao.UserDao;
 import com.toklahBackend.dao.UserImageDao;
+import com.toklahBackend.exception.BadRequestException;
+import com.toklahBackend.exception.ConflictException;
+import com.toklahBackend.exception.NotFoundException;
+import com.toklahBackend.exception.UnAuthorizedException;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
@@ -21,7 +26,6 @@ import com.toklahBackend.model.User;
 import com.toklahBackend.sendEmail.SendEmail;
 import com.toklahBackend.service.UserService;
 
-import javassist.NotFoundException;
 
 @Component
 public class UserServiceImp implements UserService{
@@ -42,18 +46,22 @@ public class UserServiceImp implements UserService{
     SendEmail serviceSendEmail;
 	
 	@Override
-	public User register(User user) throws Exception {
+	public User register(User user) {
 		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPass = passwordEncoder.encode(user.getPassword());
 		
 		//checking empty fields
-		if (user.getEmail() == null || user.getPassword() == null) {
-			throw new Exception("enter the required fields");
-		}
+		if (user.getFirstName() == null || user.getFatherName() == null || user.getGrandFatherName() == null || user.getLastName() == null
+				|| user.getEmail() == null || user.getPassword() == null || user.getCountryKey() == null || user.getMobileNumber() == null
+				|| user.getBirthDate() == null || user.getGender() == null || user.getOccupation() == null || user.getSpecialization() == null
+				|| user.getEducationalLevel() == null || user.getT_shirtSize() == null || user.getIbanNumber() == null || user.getLanguage() == null
+				|| user.getAboutMe() == null){
+			throw new BadRequestException("enter the required fields");}
+
 		//checking if the user register before
 		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
-			throw new Exception("this user already registered");
+			throw new ConflictException("this user already registered");
 		}
 		
 		user.setPassword(hashedPass);
@@ -62,31 +70,31 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public User login(Login login) throws Exception {
+	public User login(Login login) {
 	
 		if (login.getMobileOrEmail().isEmpty()) {
-			throw new Exception("Missing email or mobile #");
+			throw new BadRequestException("Missing email or mobile #");
 		}
 		if (login.getPassword().isEmpty()) {
-			throw new Exception("Missing password");
+			throw new BadRequestException("Missing password");
 		}else {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			User user = userDao.mobileOremail(login.getMobileOrEmail());
 			if (user == null) {
-				throw new Exception("User not found");
+				throw new NotFoundException("User not found");
 			} else {
 				if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
 					return user;
 					
 				} else {
-					throw new Exception("Password not match");
+					throw new UnAuthorizedException("Password not match");
 					}
 				}
 			}
 	}
 	
 	@Override
-	public User editUser(int userId, User user) throws Exception {
+	public User editUser(int userId, User user) {
 				
 		User newUser= userDao.findOne(userId);
 		
@@ -116,7 +124,7 @@ public class UserServiceImp implements UserService{
 			if(checkEmail == null) {
 					newUser.setEmail(user.getEmail());
 			}else {
-				throw new Exception("Email already exist"); 
+				throw new UnAuthorizedException("another user with this email"); 
 			}
 			
 		}
@@ -127,7 +135,7 @@ public class UserServiceImp implements UserService{
 			if(checkMobile == null) {
 				newUser.setMobileNumber(user.getMobileNumber());
 			}else {
-				throw new Exception("another user with this mobile number"); 
+				throw new UnAuthorizedException("another user with this mobile number"); 
 			}
 		newUser.setMobileNumber(user.getMobileNumber());
 		}
@@ -188,14 +196,14 @@ public class UserServiceImp implements UserService{
 		User user = userDao.findOne(userId);
 		
 		if (user == null) {
-			throw new NotFoundException(null);
+			throw new NotFoundException();
 		}
 				
 		return user;
 	}
 
 	@Override
-	public Ticket addTicket(int userId, int eventId) throws Exception {
+	public Ticket addTicket(int userId, int eventId) {
 
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
@@ -203,7 +211,7 @@ public class UserServiceImp implements UserService{
 		List<Ticket> userTickets= ticketDao.getTicketbyUserAndEvent(userId, eventId);
 		if (userTickets.size() > 0)
 		{
-			throw new Exception("You have ticket for this event");
+			throw new ConflictException("You have ticket for this event");
 		} 
 		if (event.getIsVolunteering() == false)
 		{
@@ -221,7 +229,7 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) throws NotFoundException {
+	public Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) {
 		Page<Ticket> ticket = ticketDao.getTicketbyUserId(userId, pageable);
 		if(ticket != null) {
 		return ticket;
@@ -253,12 +261,12 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public void changePassword(String password, int userId) throws NotFoundException {
+	public void changePassword(String password, int userId) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		User user = new User();
 		user = userDao.findOne(userId);
 		if (user == null) {
-			throw new NotFoundException("user not found");
+			throw new NotFoundException();
 		} else {
 			user.setPassword(passwordEncoder.encode(password));
 			userDao.save(user);
@@ -267,7 +275,7 @@ public class UserServiceImp implements UserService{
 	}
 
 	@Override
-	public void emailchangePassword(SentEmail email) throws Exception {
+	public void emailchangePassword(SentEmail email) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		User user = new User();
 		user = userDao.findByEmail(email.getEmail());
@@ -282,7 +290,7 @@ public class UserServiceImp implements UserService{
 			user.setPassword(passwordEncoder.encode(password));
 			userDao.save(user);
 			}catch(Exception e) {
-				throw new Exception("Error while sending the password" + e.getMessage());
+				throw new BadRequestException("Error while sending the password" + e.getMessage());
 			}
 		}
 

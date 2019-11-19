@@ -38,7 +38,7 @@ public class EventController {
 	@RequestMapping(value = "/{typeId}/{targetId}/addEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Event> addEvent(@RequestBody Event event, @PathVariable int targetId,
-			@PathVariable int typeId) {	
+			@PathVariable int typeId) throws Exception {	
 		Event myEvent = eventServiceImp.addEvent(event, targetId, typeId);
 
 		return new ResponseEntity<Event>(myEvent, responseHeaders, HttpStatus.CREATED);

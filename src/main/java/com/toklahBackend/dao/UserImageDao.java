@@ -2,8 +2,8 @@ package com.toklahBackend.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.toklahBackend.model.ImageInfo;
+import com.toklahBackend.model.UserImage;
 
-public interface UserImageDao extends JpaRepository< ImageInfo, String>{
+public interface UserImageDao extends JpaRepository< UserImage, String>{
 
 }
