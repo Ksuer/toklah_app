@@ -45,22 +45,18 @@ public class AmazonClient {
 		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 		this.s3client = new AmazonS3Client(credentials);
 	}
+	String fileUrl = "";
+	String userfileUrl = "";
+	String eventfileUrl = "";
+	String userImage = "user";
+	String eventImage = "event";
 
-	public String uploadFile(MultipartFile multipartFile) throws IOException {
-
-		String fileUrl = "";
-		String userfileUrl = "";
-		String eventfileUrl = "";
-		String userImage = "user";
-		String eventImage = "user";
-		
+	public String uploadFileUser(MultipartFile multipartFile) throws IOException {
 		try {
 			File file = convertMultiPartToFile(multipartFile);
 
 			String fileName = generateFileName(multipartFile);
-			fileUrl = endpointUrl + "/" + bucketName + "/" +  fileName;
-			eventfileUrl = endpointUrl + "/" + bucketName + "/" + eventImage + "/" +  fileName;
-			userfileUrl = endpointUrl + "/" + bucketName + "/" + userImage + "/" +  fileName;
+			fileUrl = endpointUrl + "/" + bucketName + "/" + userImage + "/" +  fileName;
 			uploadFileTos3bucket(fileName, file);
 			
 			//fileUrl = endpointUrl + "/" + bucketName + "/" + folderName + "/" +  fileName;
@@ -74,8 +70,6 @@ public class AmazonClient {
 	          logger.info("AWS Error Code:   " + ase.getErrorCode());
 	          logger.info("Error Type:       " + ase.getErrorType());
 	          logger.info("Request ID:       " + ase.getRequestId());
-	          
-	          
 	            } catch (AmazonClientException ace) {
 	              logger.info("Caught an AmazonClientException: ");
 	                logger.info("Error Message: " + ace.getMessage());
@@ -87,21 +81,33 @@ public class AmazonClient {
 
 	}
 	
-	/*public List<String> uploadListFile(List<MultipartFile> multipartFile) {
-    	List<String> fileUrl = new ArrayList<String>();
-        try {
-        	for(int i = 0; i < multipartFile.size(); i++) {
-            File file = convertMultiPartToFile(multipartFile.get(i));
-            String fileName = generateFileName(multipartFile.get(i));
-            uploadFileTos3bucket(fileName, file);
-            System.out.println(file.getAbsolutePath());
-            file.delete();
-        	}
-        } catch (Exception e) {
-           e.printStackTrace();
-        }
-        return fileUrl;
-    }*/
+	
+	public String uploadFileEvent(MultipartFile multipartFile) throws IOException {
+		try {
+			File file = convertMultiPartToFile(multipartFile);
+
+			String fileName = generateFileName(multipartFile);
+			fileUrl = endpointUrl + "/" + bucketName + "/" + eventImage + "/" +  fileName;
+			uploadFileTos3bucket(fileName, file);
+			file.delete();
+		} 
+		catch (AmazonServiceException ase) {
+	          logger.info("Caught an AmazonServiceException from GET requests, rejected reasons:");
+	          logger.info("Error Message:    " + ase.getMessage());
+	          logger.info("HTTP Status Code: " + ase.getStatusCode());
+	          logger.info("AWS Error Code:   " + ase.getErrorCode());
+	          logger.info("Error Type:       " + ase.getErrorType());
+	          logger.info("Request ID:       " + ase.getRequestId());
+	            } catch (AmazonClientException ace) {
+	              logger.info("Caught an AmazonClientException: ");
+	                logger.info("Error Message: " + ace.getMessage());
+	            } catch (IOException ioe) {
+	              logger.info("IOE Error Message: " + ioe.getMessage());
+	              
+	            }
+		return fileUrl;
+
+	}
 
 	public String deleteFileFromS3Bucket(String fileUrl) {
 		String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
@@ -112,7 +118,6 @@ public class AmazonClient {
 	private void uploadFileTos3bucket(String fileName, File file) {
 		s3client.putObject(
 				new PutObjectRequest(bucketName, fileName, file));
-				//new PutObjectRequest(bucketName, fileName, folderName, file));
 	}
 
 	private String generateFileName(MultipartFile multiPart) {

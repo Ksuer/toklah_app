@@ -70,8 +70,7 @@ public class User {
 	@Column(name = "creationdate")
 	private Date creationdate;
 
-	@OneToOne
-	private UserImage userImage;
+	private String userImage;
 	
 	@OneToMany(mappedBy = "user",targetEntity = Ticket.class, cascade =CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ticketNumber")

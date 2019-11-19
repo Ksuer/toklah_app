@@ -1,6 +1,9 @@
 package com.toklahBackend.model;
 
+import java.sql.Date;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -28,12 +32,20 @@ public class EventImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int imageId;
+	
 	private String fileName;
 	private String fileUri;
-
-	/*@JsonBackReference("event-image")
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "event")
-	private Event event;*/
+	@OneToOne
+	private Event event;
+	
+	public EventImage(String fileName , String fileUri ,Event event) {
+		this.fileName = fileName;
+	    this.fileUri = fileUri;
+	    this.event= event;
+	}
+	
+	@CreationTimestamp
+	@Column(name = "creationdate")
+	private Date creationdate;
 
 }

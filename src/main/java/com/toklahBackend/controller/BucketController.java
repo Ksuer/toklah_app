@@ -48,20 +48,24 @@ public class BucketController {
 	public String uploadUserImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int userId) throws Exception {
     	
 		User user= userDao.findOne(userId);
-
-		UserImage userImage = new UserImage(file.getOriginalFilename() ,  this.amazonClient.uploadFile(file), user);
-		
-		user.setUserImage(userImage);
+		String url = amazonClient.uploadFileUser(file);
+		UserImage userImage = new UserImage(file.getOriginalFilename() ,  url , user);
 		userImageDao.save(userImage);
-		
-		return this.amazonClient.uploadFile(file);
+		user.setUserImage(url);
+		userDao.save(user);
+		return user.getUserImage();
 	}
 	
-	/*@PostMapping("/{eventId}/uploadEventImage")
+	@PostMapping("/{eventId}/uploadEventImage")
 	public String uploadEventImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int eventId) throws Exception {
     	
+		String url = amazonClient.uploadFileEvent(file);
 		Event event= eventDao.findOne(eventId);
-
-	}*/
+		EventImage eventImage = new EventImage( file.getOriginalFilename() ,  url , event);
+		eventImageDao.save(eventImage);
+		event.setEventImage(url);
+		eventDao.save(event);
+		return event.getEventImage();
+	}
 	
 }

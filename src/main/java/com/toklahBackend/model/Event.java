@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.mapping.Set;
@@ -44,7 +45,7 @@ public class Event {
 	private EventTarget eventTargetGroup;
 	private Double lat;
 	private Double lng;
-	//private String eventImage;
+	private String eventImage;
 	private Date eventDate;
 	private String eventStartTime;
 	private String eventEndtTime;
@@ -61,9 +62,5 @@ public class Event {
 	private String companyEmail;
 	private String contactNumber1;
 	private String contactNumber2;
-	
-	/*@OneToMany(mappedBy = "event",targetEntity = EventImage.class, cascade =CascadeType.ALL,  fetch = FetchType.EAGER)
-	@JsonManagedReference("event-image")
-	private Set <EventImage> eventImage;*/
 		
 }
