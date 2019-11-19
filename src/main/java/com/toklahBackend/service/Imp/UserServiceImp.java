@@ -4,8 +4,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +27,7 @@ import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
 import com.toklahBackend.model.Ticket;
 import com.toklahBackend.model.User;
+import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.sendEmail.SendEmail;
 import com.toklahBackend.service.UserService;
 
@@ -44,6 +49,14 @@ public class UserServiceImp implements UserService{
 	
 	@Autowired
     SendEmail serviceSendEmail;
+	
+	@Value("Authorization")
+	private String tokenHeader;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	@Qualifier("customUserDetailsService")
+	private UserDetailsService userDetailsService;
 	
 	@Override
 	public User register(User user) {
@@ -71,7 +84,6 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public User login(Login login) {
-	
 		if (login.getMobileOrEmail().isEmpty()) {
 			throw new BadRequestException("Missing email or mobile #");
 		}
@@ -83,7 +95,10 @@ public class UserServiceImp implements UserService{
 			if (user == null) {
 				throw new NotFoundException("User not found");
 			} else {
+				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
+				final String token = jwtTokenUtil.generateToken(userDetails);
 				if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
+					user.setToken(token);
 					return user;
 					
 				} else {
@@ -95,7 +110,6 @@ public class UserServiceImp implements UserService{
 	
 	@Override
 	public User editUser(int userId, User user) {
-				
 		User newUser= userDao.findOne(userId);
 		
 		if (user.getFirstName() != null) {
@@ -180,8 +194,10 @@ public class UserServiceImp implements UserService{
 			newUser.setAboutMe(user.getAboutMe());
 		}
 		
-		
 		userDao.save(newUser);
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+		newUser.setToken(token);
 		return newUser;
 	}
 
@@ -204,7 +220,6 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public Ticket addTicket(int userId, int eventId) {
-
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
 		Ticket myTicket= new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());

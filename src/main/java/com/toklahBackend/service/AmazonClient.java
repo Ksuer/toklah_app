@@ -49,11 +49,18 @@ public class AmazonClient {
 	public String uploadFile(MultipartFile multipartFile) throws IOException {
 
 		String fileUrl = "";
+		String userfileUrl = "";
+		String eventfileUrl = "";
+		String userImage = "user";
+		String eventImage = "user";
+		
 		try {
 			File file = convertMultiPartToFile(multipartFile);
 
 			String fileName = generateFileName(multipartFile);
 			fileUrl = endpointUrl + "/" + bucketName + "/" +  fileName;
+			eventfileUrl = endpointUrl + "/" + bucketName + "/" + eventImage + "/" +  fileName;
+			userfileUrl = endpointUrl + "/" + bucketName + "/" + userImage + "/" +  fileName;
 			uploadFileTos3bucket(fileName, file);
 			
 			//fileUrl = endpointUrl + "/" + bucketName + "/" + folderName + "/" +  fileName;

@@ -57,6 +57,7 @@ public class User {
 	private String ibanNumber;
 	private String language;
 	private String skill;
+	private String token;
 	private String aboutMe;
 	private int organizingEventNumber;
 	private int volunteeringEventNumber;
