@@ -5,7 +5,6 @@ import java.util.List;
 import com.toklahBackend.model.Event;
 
 public interface EventService {
-	
 	Event addEvent(Event event, int targetId, int typeId) ;
 
 	List<Event> getAllEvent();

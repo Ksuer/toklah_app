@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.toklahBackend.dao.EventDao;
+
 import com.toklahBackend.exception.BadRequestException;
 import com.toklahBackend.exception.NotFoundException;
+
 import com.toklahBackend.model.Event;
 import com.toklahBackend.service.EventService;
 import com.toklahBackend.unit.EventTarget;
@@ -24,6 +26,7 @@ public class EventServiceImp implements EventService{
 
 	@Autowired
 	EventDao eventDao;
+
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
@@ -65,14 +68,24 @@ public class EventServiceImp implements EventService{
 			eventDao.save(newEvent);
 			return newEvent;
 		}
-		
+
 	}
 	
 	@Override
 	public List<Event> getAllEvent() {
 		return (List<Event>) eventDao.findAll();
 	}
-
+	
+	@Override
+	public List<Event> getAllVolunteerEvent() {
+		return eventDao.getAllVolunteerEvent();
+	}
+	
+	@Override
+	public List<Event> getAllRegEvent() {
+		return eventDao.getAllRegEvent();
+	}
+	
 	@Override
 	public Event getEvent(int eventId) {
 		Event event = eventDao.findOne(eventId);

@@ -44,6 +44,7 @@ public class Ticket {
 	private Boolean isCanceled;
 
 	public Ticket(int eventId, String name, Date date, String startTime, String endTime, String mobileNumber,
+
 			float eventReward) {
 		super();
 		this.eventId = eventId;
@@ -54,5 +55,4 @@ public class Ticket {
 		this.mobileNumber = mobileNumber;
 		this.eventReward = eventReward;
 	}
-
 }
