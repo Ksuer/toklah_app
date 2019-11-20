@@ -1,5 +1,9 @@
 package com.toklahBackend.service.Imp;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,6 +24,7 @@ import com.toklahBackend.dao.UserDao;
 import com.toklahBackend.dao.UserImageDao;
 import com.toklahBackend.exception.BadRequestException;
 import com.toklahBackend.exception.ConflictException;
+import com.toklahBackend.exception.LockedException;
 import com.toklahBackend.exception.NotFoundException;
 import com.toklahBackend.exception.UnAuthorizedException;
 import com.toklahBackend.model.Event;
@@ -31,25 +36,24 @@ import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.sendEmail.SendEmail;
 import com.toklahBackend.service.UserService;
 
-
 @Component
-public class UserServiceImp implements UserService{
+public class UserServiceImp implements UserService {
 
 	@Autowired
 	UserDao userDao;
-	
+
 	@Autowired
 	EventDao eventDao;
-	
+
 	@Autowired
 	TicketDao ticketDao;
-	
+
 	@Autowired
 	UserImageDao userImageDao;
-	
+
 	@Autowired
-    SendEmail serviceSendEmail;
-	
+	SendEmail serviceSendEmail;
+
 	@Value("Authorization")
 	private String tokenHeader;
 	@Autowired
@@ -57,25 +61,32 @@ public class UserServiceImp implements UserService{
 	@Autowired
 	@Qualifier("customUserDetailsService")
 	private UserDetailsService userDetailsService;
-	
+
 	@Override
 	public User register(User user) {
-		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPass = passwordEncoder.encode(user.getPassword());
-		
-		//checking empty fields
-		if (user.getFirstName() == null || user.getFatherName() == null || user.getGrandFatherName() == null || user.getLastName() == null
-				|| user.getEmail() == null || user.getPassword() == null || user.getCountryKey() == null || user.getMobileNumber() == null
-				|| user.getBirthDate() == null || user.getGender() == null || user.getOccupation() == null || user.getSpecialization() == null
-				|| user.getEducationalLevel() == null || user.getT_shirtSize() == null || user.getIbanNumber() == null || user.getLanguage() == null
-				|| user.getAboutMe() == null){
-			throw new BadRequestException("enter the required fields");}
 
-		//checking if the user register before
+		// checking empty fields
+		if (user.getFirstName() == null || user.getFatherName() == null || user.getGrandFatherName() == null
+				|| user.getLastName() == null || user.getEmail() == null || user.getPassword() == null
+				|| user.getCountryKey() == null || user.getMobileNumber() == null || user.getBirthDate() == null
+				|| user.getGender() == null || user.getOccupation() == null || user.getSpecialization() == null
+				|| user.getEducationalLevel() == null || user.getT_shirtSize() == null || user.getIbanNumber() == null
+				|| user.getLanguage() == null || user.getAboutMe() == null) {
+			throw new BadRequestException("enter the required fields");
+		}
+
+		// checking if the user register before
 		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
 			throw new ConflictException("this user already registered");
 		}
+		
+		//set lastpayment to today for the free trail  
+		Calendar cal = Calendar.getInstance();
+		String myFormat = "yyyy-MM-dd" ;
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+		user.setLastPayment(sdf.format(cal.getTime()));
 		
 		user.setPassword(hashedPass);
 		userDao.save(user);
@@ -89,7 +100,7 @@ public class UserServiceImp implements UserService{
 		}
 		if (login.getPassword().isEmpty()) {
 			throw new BadRequestException("Missing password");
-		}else {
+		} else {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			User user = userDao.mobileOremail(login.getMobileOrEmail());
 			if (user == null) {
@@ -100,101 +111,101 @@ public class UserServiceImp implements UserService{
 				if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
 					user.setToken(token);
 					return user;
-					
+
 				} else {
 					throw new UnAuthorizedException("Password not match");
-					}
 				}
 			}
+		}
 	}
-	
+
 	@Override
 	public User editUser(int userId, User user) {
-		User newUser= userDao.findOne(userId);
-		
+		User newUser = userDao.findOne(userId);
+
 		if (user.getFirstName() != null) {
 			newUser.setFirstName(user.getFirstName());
 		}
-		
+
 		if (user.getFatherName() != null) {
 			newUser.setFatherName(user.getFirstName());
 		}
-		
+
 		if (user.getGrandFatherName() != null) {
 			newUser.setGrandFatherName(user.getFirstName());
 		}
-		
+
 		if (user.getLastName() != null) {
 			newUser.setLastName(user.getLastName());
 		}
-		
+
 		if (user.getLastName() != null) {
 			newUser.setLastName(user.getLastName());
 		}
-		
+
 		if (user.getEmail() != null) {
-			
-			if(!newUser.getEmail().trim().equalsIgnoreCase(user.getEmail().trim())) {
+
+			if (!newUser.getEmail().trim().equalsIgnoreCase(user.getEmail().trim())) {
 				User checkEmail = userDao.findByEmail(user.getEmail());
-				if(checkEmail == null) {
-						newUser.setEmail(user.getEmail());
-				}else {
-					throw new UnAuthorizedException("another user with this email"); 
+				if (checkEmail == null) {
+					newUser.setEmail(user.getEmail());
+				} else {
+					throw new UnAuthorizedException("another user with this email");
 				}
 			}
 		}
-		
+
 		if (user.getMobileNumber() != null) {
-			if(!newUser.getMobileNumber().trim().equalsIgnoreCase(user.getMobileNumber().trim())) {
+			if (!newUser.getMobileNumber().trim().equalsIgnoreCase(user.getMobileNumber().trim())) {
 				User checkMobile = userDao.findByMobileNumber(user.getMobileNumber());
-				if(checkMobile == null) {
+				if (checkMobile == null) {
 					newUser.setMobileNumber(user.getMobileNumber());
-				}else {
-					throw new UnAuthorizedException("another user with this mobile number"); 
+				} else {
+					throw new UnAuthorizedException("another user with this mobile number");
 				}
-			}	
+			}
 		}
-	
+
 		if (user.getCountryKey() != null) {
 			newUser.setCountryKey(user.getCountryKey());
 		}
-		
+
 		if (user.getBirthDate() != null) {
 			newUser.setBirthDate(user.getBirthDate());
 		}
-		
+
 		if (user.getGender() != null) {
 			newUser.setGender(user.getGender());
 		}
-		
+
 		if (user.getOccupation() != null) {
 			newUser.setOccupation(user.getOccupation());
 		}
-		
+
 		if (user.getSpecialization() != null) {
 			newUser.setSpecialization(user.getSpecialization());
 		}
-		
+
 		if (user.getEducationalLevel() != null) {
 			newUser.setEducationalLevel(user.getEducationalLevel());
 		}
-		
+
 		if (user.getT_shirtSize() != null) {
 			newUser.setT_shirtSize(user.getT_shirtSize());
 		}
-		
+
 		if (user.getIbanNumber() != null) {
 			newUser.setIbanNumber(user.getIbanNumber());
 		}
-		
+
 		if (user.getLanguage() != null) {
 			newUser.setLanguage(user.getLanguage());
 		}
-		
+
 		if (user.getAboutMe() != null) {
 			newUser.setAboutMe(user.getAboutMe());
 		}
-		
+
 		userDao.save(newUser);
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
 		final String token = jwtTokenUtil.generateToken(userDetails);
@@ -206,16 +217,22 @@ public class UserServiceImp implements UserService{
 	public List<User> getAllUser() {
 		return (List<User>) userDao.findAll();
 	}
-	
+
 	@Override
-	public User getUser(int userId) throws NotFoundException {
-		
+	public User getUser(int userId) {
+
 		User user = userDao.findOne(userId);
-		
+
 		if (user == null) {
 			throw new NotFoundException();
 		}
-				
+		try {
+			 if (!isValid(user.getLastPayment())) {
+				 throw new LockedException("please renew your account");
+			 }
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return user;
 	}
 
@@ -224,33 +241,39 @@ public class UserServiceImp implements UserService{
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
 		int countTicket = ticketDao.countUsedTicket(eventId);
+		//check if the last payment is less than 30 days
+		try {
+			 if (!isValid(user.getLastPayment())) {
+				 throw new LockedException("please renew your account");
+			 }
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
-		if(countTicket >= event.getEventOrganizerNumber()) {
+		if (countTicket >= event.getEventOrganizerNumber()) {
 			throw new ConflictException("the event is full");
 		}
 
-		Ticket myTicket= new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
-		List<Ticket> userTickets= ticketDao.getTicketbyUserAndEvent(userId, eventId);
-		if (userTickets.size() > 0)
-		{
+		Ticket myTicket = new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(),
+				event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
+		List<Ticket> userTickets = ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		if (userTickets.size() > 0) {
 			throw new ConflictException("You have ticket for this event");
-		} 
-		
-		//check if the the tickets are full
-		if(countTicket >= event.getEventOrganizerNumber()) {
+		}
+
+		// check if the the tickets are full
+		if (countTicket >= event.getEventOrganizerNumber()) {
 			throw new ConflictException("the event is full");
 		}
 
-		if (event.getIsVolunteering() == false)
-		{
-			user.setOrganizingEventNumber(user.getOrganizingEventNumber()+1);
+		if (event.getIsVolunteering() == false) {
+			user.setOrganizingEventNumber(user.getOrganizingEventNumber() + 1);
 		}
-		
-		if (event.getIsVolunteering() == true)
-		{
-			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber()+1);
+
+		if (event.getIsVolunteering() == true) {
+			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber() + 1);
 		}
-		
+
 		myTicket.setUser(user);
 		myTicket.setIsCanceled(false);
 		ticketDao.save(myTicket);
@@ -260,34 +283,32 @@ public class UserServiceImp implements UserService{
 	@Override
 	public Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) {
 		Page<Ticket> ticket = ticketDao.getTicketbyUserId(userId, pageable);
-		if(ticket != null) {
-		return ticket;
-		}else {
+		if (ticket != null) {
+			return ticket;
+		} else {
 			throw new NotFoundException("no ticket");
 		}
 	}
 
 	@Override
 	public void deleteTicket(int userId, int ticketId) {
-		Ticket ticket= ticketDao.findOne(ticketId);
+		Ticket ticket = ticketDao.findOne(ticketId);
 
-		ticket.setIsCanceled(true);  
+		ticket.setIsCanceled(true);
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(ticket.getEventId());
-		
-		if (event.getIsVolunteering() == false)
-		{
-			user.setOrganizingEventNumber(user.getOrganizingEventNumber()-1);
+
+		if (event.getIsVolunteering() == false) {
+			user.setOrganizingEventNumber(user.getOrganizingEventNumber() - 1);
 		}
-		
-		if (event.getIsVolunteering() == true)
-		{
-			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber()-1);
+
+		if (event.getIsVolunteering() == true) {
+			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber() - 1);
 		}
-		
+
 		userDao.save(user);
-		ticketDao.save(ticket); 
-	
+		ticketDao.save(ticket);
+
 	}
 
 	@Override
@@ -303,7 +324,7 @@ public class UserServiceImp implements UserService{
 		}
 
 	}
-	
+
 	@Override
 	public void restorePassword(String oldPass, String newPass, int userId) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -330,20 +351,21 @@ public class UserServiceImp implements UserService{
 		if (user == null) {
 			throw new NotFoundException("No one with his email");
 		} else {
-			String password = RandomStringUtils.random(8,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-			String text = "Your new password is " + password ;
+			String password = RandomStringUtils.random(8,
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+			String text = "Your new password is " + password;
 			try {
-			String title = "Forgot your password? ";
-			serviceSendEmail.sendMail(email.getEmail(),text, title);
-			user.setPassword(passwordEncoder.encode(password));
-			userDao.save(user);
-			}catch(Exception e) {
+				String title = "Forgot your password? ";
+				serviceSendEmail.sendMail(email.getEmail(), text, title);
+				user.setPassword(passwordEncoder.encode(password));
+				userDao.save(user);
+			} catch (Exception e) {
 				throw new BadRequestException("Error while sending the password" + e.getMessage());
 			}
 		}
 
 	}
-	
+
 	@Override
 	public int getOrganizingEvent(int userId) {
 
@@ -356,6 +378,30 @@ public class UserServiceImp implements UserService{
 
 		User user = userDao.findOne(userId);
 		return user.getVolunteeringEventNumber();
+	}
+	
+	public Boolean isValid(String date) throws ParseException {
+		Boolean isV = false;
+		String myFormat = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+		if (date.isEmpty()) {
+			date = "2000-01-01";  // think of something better when no date 
+		}
+		Date lastPayment = sdf.parse(date);
+		
+		Calendar todayPlus30 = Calendar.getInstance();
+		todayPlus30.setTime(lastPayment);
+		todayPlus30.add(Calendar.DAY_OF_YEAR, 30);
+		todayPlus30.set(Calendar.HOUR_OF_DAY, 0);
+		todayPlus30.set(Calendar.MINUTE, 0);
+		todayPlus30.set(Calendar.SECOND, 0);
+		todayPlus30.set(Calendar.MILLISECOND, 0);
+		
+		if (todayPlus30.after(Calendar.getInstance()) ) {
+			isV = true;
+		}
+		System.out.println("isV = " + isV);
+		return isV;
 	}
 
 }

@@ -61,6 +61,8 @@ public class User {
 	private String aboutMe;
 	private int organizingEventNumber;
 	private int volunteeringEventNumber;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String lastPayment;
 	
 	//User registration date ()
 	/*@CreationTimestamp
