@@ -16,5 +16,4 @@ public interface EventService {
 	List<Event> getAllVolunteerEvent();
 
 	List<Event> getAllRegEvent();
-
 }

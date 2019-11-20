@@ -40,6 +40,8 @@ public interface UserService {
 
 	int getVolunteeringEvent(int userId);
 
+	void restorePassword(String oldPass, String newPass, int userId);
+
 	//List<Ticket> getAllTickets();
 
 	//List<Ticket> getAllTickets(int userId);

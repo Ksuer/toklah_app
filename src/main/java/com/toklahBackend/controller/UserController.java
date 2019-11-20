@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.toklahBackend.model.ChangePassword;
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
 import com.toklahBackend.model.Ticket;
@@ -86,11 +85,12 @@ public class UserController {
 		return new ResponseEntity<>(userServiceImp.editUser(userId, user), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{userId}/changepassword", method = RequestMethod.PUT)
+	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> changepassword(@PathVariable int userId, @RequestBody String password) throws NotFoundException {
-		userServiceImp.changePassword(password, userId);
-		return new ResponseEntity<>("password changed", HttpStatus.OK);
+	public ResponseEntity<?> changepassword(@RequestBody ChangePassword changePassword) {
+		userServiceImp.restorePassword(changePassword.getOldPassword(), changePassword.getNewPassword(),
+				changePassword.getUserId());
+		return new ResponseEntity<>("change succssful", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/forgotpassword",  method = RequestMethod.PUT)

@@ -48,16 +48,16 @@ public class AmazonClient {
 	String fileUrl = "";
 	String userfileUrl = "";
 	String eventfileUrl = "";
-	String userImage = "user";
-	String eventImage = "event";
+	String userImage = "/user";
+	String eventImage = "/event";
 
 	public String uploadFileUser(MultipartFile multipartFile) throws IOException {
 		try {
 			File file = convertMultiPartToFile(multipartFile);
 
 			String fileName = generateFileName(multipartFile);
-			fileUrl = endpointUrl + "/" + bucketName + "/" + userImage + "/" +  fileName;
-			uploadFileTos3bucket(fileName, file);
+			fileUrl = endpointUrl + "/" + bucketName + userImage + "/" +  fileName;
+			uploadFileTos3bucket(userImage, fileName, file);
 			
 			//fileUrl = endpointUrl + "/" + bucketName + "/" + folderName + "/" +  fileName;
 			//uploadFileTos3bucket(fileName, folderName, file);
@@ -87,8 +87,8 @@ public class AmazonClient {
 			File file = convertMultiPartToFile(multipartFile);
 
 			String fileName = generateFileName(multipartFile);
-			fileUrl = endpointUrl + "/" + bucketName + "/" + eventImage + "/" +  fileName;
-			uploadFileTos3bucket(fileName, file);
+			fileUrl = endpointUrl + "/" + bucketName +  eventImage + "/" +  fileName;
+			uploadFileTos3bucket(eventImage, fileName, file);
 			file.delete();
 		} 
 		catch (AmazonServiceException ase) {
@@ -115,9 +115,9 @@ public class AmazonClient {
 		return "Successfully deleted";
 	}
 
-	private void uploadFileTos3bucket(String fileName, File file) {
+	private void uploadFileTos3bucket(String folderName, String fileName, File file) {
 		s3client.putObject(
-				new PutObjectRequest(bucketName, fileName, file));
+				new PutObjectRequest(bucketName + folderName, fileName, file));
 	}
 
 	private String generateFileName(MultipartFile multiPart) {

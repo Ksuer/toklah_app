@@ -96,17 +96,6 @@ public class EventServiceImp implements EventService{
 		}
 	}
 
-
-	@Override
-	public List<Event> getAllVolunteerEvent() {
-		return eventDao.getAllVolunteerEvent();
-	}
-	
-	@Override
-	public List<Event> getAllRegEvent() {
-		return eventDao.getAllRegEvent();
-	}
-
 	@Override
 	public List<Event> search(String word) {
 		

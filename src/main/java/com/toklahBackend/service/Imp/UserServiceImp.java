@@ -133,25 +133,26 @@ public class UserServiceImp implements UserService{
 		}
 		
 		if (user.getEmail() != null) {
-			User checkEmail = userDao.findByEmail(user.getEmail());
 			
-			if(checkEmail == null) {
-					newUser.setEmail(user.getEmail());
-			}else {
-				throw new UnAuthorizedException("another user with this email"); 
+			if(!newUser.getEmail().trim().equalsIgnoreCase(user.getEmail().trim())) {
+				User checkEmail = userDao.findByEmail(user.getEmail());
+				if(checkEmail == null) {
+						newUser.setEmail(user.getEmail());
+				}else {
+					throw new UnAuthorizedException("another user with this email"); 
+				}
 			}
-			
 		}
 		
 		if (user.getMobileNumber() != null) {
-			User checkMobile = userDao.findByMobileNumber(user.getMobileNumber());
-			
-			if(checkMobile == null) {
-				newUser.setMobileNumber(user.getMobileNumber());
-			}else {
-				throw new UnAuthorizedException("another user with this mobile number"); 
-			}
-		newUser.setMobileNumber(user.getMobileNumber());
+			if(!newUser.getMobileNumber().trim().equalsIgnoreCase(user.getMobileNumber().trim())) {
+				User checkMobile = userDao.findByMobileNumber(user.getMobileNumber());
+				if(checkMobile == null) {
+					newUser.setMobileNumber(user.getMobileNumber());
+				}else {
+					throw new UnAuthorizedException("another user with this mobile number"); 
+				}
+			}	
 		}
 	
 		if (user.getCountryKey() != null) {
@@ -222,6 +223,11 @@ public class UserServiceImp implements UserService{
 	public Ticket addTicket(int userId, int eventId) {
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(eventId);
+		int countTicket = ticketDao.countUsedTicket(eventId);
+		
+		if(countTicket >= event.getEventOrganizerNumber()) {
+			throw new ConflictException("the event is full");
+		}
 
 		Ticket myTicket= new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(), event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
 		List<Ticket> userTickets= ticketDao.getTicketbyUserAndEvent(userId, eventId);
@@ -229,6 +235,11 @@ public class UserServiceImp implements UserService{
 		{
 			throw new ConflictException("You have ticket for this event");
 		} 
+		
+		//check if the the tickets are full
+		if(countTicket >= event.getEventOrganizerNumber()) {
+			throw new ConflictException("the event is full");
+		}
 
 		if (event.getIsVolunteering() == false)
 		{
@@ -241,6 +252,7 @@ public class UserServiceImp implements UserService{
 		}
 		
 		myTicket.setUser(user);
+		myTicket.setIsCanceled(false);
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
@@ -290,6 +302,24 @@ public class UserServiceImp implements UserService{
 			userDao.save(user);
 		}
 
+	}
+	
+	@Override
+	public void restorePassword(String oldPass, String newPass, int userId) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		User user = new User();
+		user = userDao.findOne(userId);
+		if (user == null) {
+			throw new NotFoundException();
+		} else {
+			String dbPass = user.getPassword();
+			if (passwordEncoder.matches(oldPass, dbPass)) {
+				user.setPassword(passwordEncoder.encode(newPass));
+				userDao.save(user);
+			} else {
+				throw new UnAuthorizedException("password not match");
+			}
+		}
 	}
 
 	@Override
