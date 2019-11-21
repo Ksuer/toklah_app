@@ -31,13 +31,13 @@ public class EventServiceImp implements EventService{
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
 		newEvent = event;
-		
+
 		if (event.getEventTitle()==null || event.getEventType()==null || event.getEventTargetGroup()==null||
 				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null ||
 				event.getEventStartTime()==null || event.getEventEndtTime()==null || event.getEventSummary()==null ||
 				event.getCompanyName()==null || event.getCompanyActivityType()==null || event.getCompanyCrNumber()==null ||
 				event.getCompanyEmail()==null || event.getContactNumber1()==null || event.getContactNumber2()==null) {
-			throw new BadRequestException("enter the required fields");
+			throw new BadRequestException("MSG001");
 		} else {
 			if(event.getEventReward() == 0) {
 				newEvent.setIsVolunteering(true);
@@ -101,7 +101,12 @@ public class EventServiceImp implements EventService{
 		
 		List<Event> event = null;
 		event =  eventDao.searchByWord(word);
-		return event;
+
+		if(event != null) {
+			return event;
+			}else {
+				throw new NotFoundException("MSG009");
+			}
 		
 		//Trying to implement search
 		
