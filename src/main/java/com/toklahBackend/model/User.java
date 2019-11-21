@@ -63,6 +63,8 @@ public class User {
 	private int volunteeringEventNumber;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String lastPayment;
+	private Boolean isLock;  // true -> if the user didn't do the otp
+	private Boolean isPaid; //true -> if the user pay for the type
 	
 	//User registration date ()
 	/*@CreationTimestamp

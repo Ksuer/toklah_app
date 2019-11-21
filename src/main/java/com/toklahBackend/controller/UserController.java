@@ -61,6 +61,12 @@ public class UserController {
 		}
 
 	}
+
+	@RequestMapping(value = "/otp" , method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> otp(@RequestBody Login login) throws Exception {
+		return new ResponseEntity<>(userServiceImp.otp(login), HttpStatus.OK);
+	}
 	
 	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
 	@ResponseBody

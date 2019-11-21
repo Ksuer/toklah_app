@@ -87,7 +87,8 @@ public class UserServiceImp implements UserService {
 		String myFormat = "yyyy-MM-dd" ;
 		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 		user.setLastPayment(sdf.format(cal.getTime()));
-		
+		user.setIsLock(true);
+		 user.setIsPaid(true);
 		user.setPassword(hashedPass);
 		userDao.save(user);
 		return user;
@@ -108,13 +109,40 @@ public class UserServiceImp implements UserService {
 			} else {
 				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
 				final String token = jwtTokenUtil.generateToken(userDetails);
+				if (user.getIsLock()) {
+					throw new LockedException("MSG004");
+				}
 				if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
 					user.setToken(token);
 					return user;
-
 				} else {
 					throw new UnAuthorizedException("Password not match");
 				}
+			}
+		}
+	}
+	
+	
+	@Override
+	public User otp(Login login) {
+		if (login.getMobileOrEmail().isEmpty()) {
+			throw new BadRequestException("Missing email or mobile #");
+		} else {
+			User user = userDao.mobileOremail(login.getMobileOrEmail());
+			if (user == null) {
+				throw new NotFoundException("User not found");
+			}
+			if(user.getIsLock() == false) {
+				throw new ConflictException("MSG003");
+			}else {
+				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
+				final String token = jwtTokenUtil.generateToken(userDetails);
+				if (user.getIsLock()) {
+					throw new LockedException("MSG004");
+				}
+				user.setIsLock(false);
+				user.setToken(token);
+				return user;
 			}
 		}
 	}
@@ -227,8 +255,10 @@ public class UserServiceImp implements UserService {
 			throw new NotFoundException();
 		}
 		try {
-			 if (!isValid(user.getLastPayment())) {
-				 throw new LockedException("please renew your account");
+			//check if the date is older than 30 days and the payment status is true -> it will change the status to false
+			 if (!isValid(user.getLastPayment()) && user.getIsPaid()) {
+				 user.setIsPaid(false);
+				 userDao.save(user);
 			 }
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -375,7 +405,6 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public int getVolunteeringEvent(int userId) {
-
 		User user = userDao.findOne(userId);
 		return user.getVolunteeringEventNumber();
 	}

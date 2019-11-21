@@ -42,6 +42,8 @@ public interface UserService {
 
 	void restorePassword(String oldPass, String newPass, int userId);
 
+	User otp(Login login);
+
 	//List<Ticket> getAllTickets();
 
 	//List<Ticket> getAllTickets(int userId);

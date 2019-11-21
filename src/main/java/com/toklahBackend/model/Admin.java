@@ -37,6 +37,8 @@ public class Admin {
 	private String email;
 	@Column(unique = true)
 	private String mobile;
+	private String token;
+	private int priority; // 1 is the highest
 
 
 	public Admin(int adminId, String password, String email, String mobile) {
