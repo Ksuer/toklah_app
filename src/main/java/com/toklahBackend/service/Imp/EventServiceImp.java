@@ -30,41 +30,40 @@ public class EventServiceImp implements EventService{
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
-		newEvent = event;
-		
-		if (event.getEventTitle()==null || event.getEventType()==null || event.getEventTargetGroup()==null||
+			
+		if (event.getEventTitle()==null || /*event.getEventType()==null*/ typeId == 0 ||/* event.getEventTargetGroup()==null*/ targetId == 0||
 				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null ||
 				event.getEventStartTime()==null || event.getEventEndtTime()==null || event.getEventSummary()==null ||
 				event.getCompanyName()==null || event.getCompanyActivityType()==null || event.getCompanyCrNumber()==null ||
-				event.getCompanyEmail()==null || event.getContactNumber1()==null || event.getContactNumber2()==null) {
-			throw new BadRequestException("enter the required fields");
+				event.getCompanyEmail()==null || event.getContactNumber1()==null/* || event.getContactNumber2()==null*/) {
+			throw new BadRequestException("MSG001");
 		} else {
 			if(event.getEventReward() == 0) {
-				newEvent.setIsVolunteering(true);
+				event.setIsVolunteering(true);
 			}else {
-				newEvent.setIsVolunteering(false);
+				event.setIsVolunteering(false);
 			}
-			newEvent.setIsPremium(false);
-			newEvent.setIsValid(true); // in production false 
+			event.setIsPremium(false);
+			event.setIsValid(true); // in production false 
 			
 			switch(typeId) {
-			case 1: newEvent.setEventType(EventType.EVENT);
-			case 2: newEvent.setEventType(EventType.ART);
-			case 3:	newEvent.setEventType(EventType.MUSIC);
-			case 4: newEvent.setEventType(EventType.MUSIC_EVENT);
-			case 5: newEvent.setEventType(EventType.EDICATION);
-			case 6: newEvent.setEventType(EventType.OTHER);
+			case 1: event.setEventType(EventType.EVENT); break; 
+			case 2: event.setEventType(EventType.ART); break; 
+			case 3:	event.setEventType(EventType.MUSIC); break; 
+			case 4: event.setEventType(EventType.MUSIC_EVENT); break; 
+			case 5: event.setEventType(EventType.EDICATION); break; 
+			case 6: event.setEventType(EventType.OTHER); break; 
 			default:
 			}
 			
 			switch(targetId) {
-			case 1: newEvent.setEventTargetGroup(EventTarget.CHILDREN);
-			case 2: newEvent.setEventTargetGroup(EventTarget.FAMELY);
-			case 3:	newEvent.setEventTargetGroup(EventTarget.FEMALE);
-			case 4: newEvent.setEventTargetGroup(EventTarget.MALE);
+			case 1: event.setEventTargetGroup(EventTarget.CHILDREN); break; 
+			case 2: event.setEventTargetGroup(EventTarget.FAMELY); break; 
+			case 3:	event.setEventTargetGroup(EventTarget.FEMALE); break; 
+			case 4: event.setEventTargetGroup(EventTarget.MALE); break; 
 			default:
 			}
-			
+			newEvent = event;
 			eventDao.save(newEvent);
 			return newEvent;
 		}
@@ -102,19 +101,6 @@ public class EventServiceImp implements EventService{
 		List<Event> event = null;
 		event =  eventDao.searchByWord(word);
 		return event;
-		
-		//Trying to implement search
-		
-	    /*List<Event> events=(List<Event>) eventDao.findAll() ;
-
-		List<Event> searchedEvents = new ArrayList<Event>();
-        for(Event e: events) {
-            if(e.getEventTitle().toLowerCase().contains(word.toLowerCase())) {
-            	searchedEvents.add(e);
-            }
-        }
-
-        return searchedEvents;*/
 	}
 	
 }
