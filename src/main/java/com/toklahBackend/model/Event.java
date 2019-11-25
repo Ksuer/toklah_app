@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.mapping.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -65,5 +66,9 @@ public class Event {
 	private String companyEmail;
 	private String contactNumber1;
 	private String contactNumber2;
+	
+	@CreationTimestamp
+	@Column(name = "creationdate")
+	private Date creationdate;
 
 }

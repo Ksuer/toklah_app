@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,7 +41,10 @@ public class Admin {
 	private String token;
 	private int priority; // 1 is the highest
 
-
+	@CreationTimestamp
+	@Column(name = "creationdate")
+	private Date creationdate;
+	
 	public Admin(int adminId, String password, String email, String mobile) {
 		super();
 		this.adminId = adminId;

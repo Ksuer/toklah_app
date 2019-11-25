@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -30,16 +33,17 @@ public class Transaction {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
-	//private String invoiceNumber;
-	private int transactionNumber;
-	private String cardType;
-	private Date transactionDate;
-	private Date transactionTime;
+	private int transactionId;
+	@Column(unique = true, length = 100)
+	private String transactionNumber;
+	private String accountType;
+	private String transactionDate;
+	private String transactionTime;
 	private float price;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user")
-    private User user;
-		    
+    private int userId;
+	
+	@CreationTimestamp
+	@Column(name = "creationdate")
+	private Date creationdate; 
 }

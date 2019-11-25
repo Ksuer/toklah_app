@@ -27,20 +27,23 @@ public class TransactionController {
 
 	HttpHeaders responseHeaders = new HttpHeaders();
 	
-	@RequestMapping(value = "{userId}/create", method = RequestMethod.POST)
-	public ResponseEntity<?> createTransaction(@PathVariable int userId) {
-		Transaction transaction = transactionServiceImp.create(userId);
-	
-		return new ResponseEntity<>(transaction, responseHeaders, HttpStatus.OK);
+	@RequestMapping(value = "/{userId}/create", method = RequestMethod.POST)
+	public ResponseEntity<?> createTransaction(@PathVariable int userId ,@RequestBody Transaction transaction ) {
+		return new ResponseEntity<>(transactionServiceImp.create(userId, transaction), responseHeaders, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getTransByUser/{userId}",method = RequestMethod.GET)
-	public ResponseEntity<Page<?>> getTransByUser(@PathVariable int userId,Pageable pageable) {
-		Page<Transaction> transaction = transactionServiceImp.getTransactionByUser(userId,pageable);
-		if (transaction != null) {
-			return new ResponseEntity<>(transaction, responseHeaders, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<?> getTransByUser(@PathVariable int userId,Pageable pageable) {
+		return new ResponseEntity<>(transactionServiceImp.getTransactionByUser(userId,pageable), responseHeaders, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getall",method = RequestMethod.GET)
+	public ResponseEntity<?> getAll() {
+		return new ResponseEntity<>(transactionServiceImp.getAll(), responseHeaders, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getTransBytransactionNumber/{transactionNumber}",method = RequestMethod.GET)
+	public ResponseEntity<?> getTransByUser(@PathVariable String transactionNumber) {
+		return new ResponseEntity<>(transactionServiceImp.getTransactionBytransactionNumber(transactionNumber), responseHeaders, HttpStatus.OK);
 	}
 }
