@@ -80,5 +80,5 @@ public class User {
     @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ticketNumber")
 	@JsonIgnore
     private Set <Ticket> ticket;
-
+	
 }

@@ -18,4 +18,13 @@ public interface UserDao extends CrudRepository <User, Integer>{
 
 	User findByMobileNumber(@Param("mobile")String mobile);
 	
+	User findByFirstName(@Param("firstName")String firstName);
+	
+	User findByFatherName(@Param("fatherName")String fatherName);
+
+	User findByGrandFatherName(@Param("grandFatherName")String grandFatherName);
+
+	User findByLastName(@Param("lastName")String lastName);
+
+
 }

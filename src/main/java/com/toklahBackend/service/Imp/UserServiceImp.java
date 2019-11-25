@@ -74,12 +74,16 @@ public class UserServiceImp implements UserService {
 				|| user.getGender() == null || user.getOccupation() == null || user.getSpecialization() == null
 				|| user.getEducationalLevel() == null || user.getT_shirtSize() == null || user.getIbanNumber() == null
 				|| user.getLanguage() == null || user.getAboutMe() == null) {
-			throw new BadRequestException("enter the required fields");
+			throw new BadRequestException("MSG001");
 		}
 
 		// checking if the user register before
 		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
-			throw new ConflictException("this user already registered");
+			throw new ConflictException("MSG003");
+		}
+		
+		if (userDao.findByFirstName(user.getFirstName()) != null & userDao.findByFatherName(user.getFatherName()) != null & userDao.findByGrandFatherName(user.getGrandFatherName()) != null & userDao.findByLastName(user.getLastName()) != null) {
+			throw new ConflictException("MSG012");
 		}
 		
 		//set lastpayment to today for the free trail  
@@ -96,11 +100,11 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public User login(Login login) {
-		if (login.getMobileOrEmail().isEmpty()) {
-			throw new BadRequestException("Missing email or mobile #");
+		if (login.getMobileOrEmail() == null) {
+			throw new BadRequestException("MSG001");
 		}
-		if (login.getPassword().isEmpty()) {
-			throw new BadRequestException("Missing password");
+		if (login.getPassword() == null) {
+			throw new BadRequestException("MSG001");
 		} else {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			User user = userDao.mobileOremail(login.getMobileOrEmail());
@@ -109,14 +113,16 @@ public class UserServiceImp implements UserService {
 			} else {
 				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
 				final String token = jwtTokenUtil.generateToken(userDetails);
+				
 				if (user.getIsLock()) {
 					throw new LockedException("MSG004");
 				}
 				if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
+
 					user.setToken(token);
 					return user;
 				} else {
-					throw new UnAuthorizedException("Password not match");
+					throw new UnAuthorizedException("MSG002");
 				}
 			}
 		}
@@ -281,7 +287,7 @@ public class UserServiceImp implements UserService {
 		}
 		
 		if (countTicket >= event.getEventOrganizerNumber()) {
-			throw new ConflictException("the event is full");
+			throw new ConflictException("MSG008");
 		}
 
 		Ticket myTicket = new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(),
@@ -293,7 +299,7 @@ public class UserServiceImp implements UserService {
 
 		// check if the the tickets are full
 		if (countTicket >= event.getEventOrganizerNumber()) {
-			throw new ConflictException("the event is full");
+			throw new ConflictException("MSG008");
 		}
 
 		if (event.getIsVolunteering() == false) {
@@ -368,7 +374,7 @@ public class UserServiceImp implements UserService {
 				user.setPassword(passwordEncoder.encode(newPass));
 				userDao.save(user);
 			} else {
-				throw new UnAuthorizedException("password not match");
+				throw new UnAuthorizedException("MSG011");
 			}
 		}
 	}

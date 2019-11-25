@@ -30,7 +30,6 @@ public class EventServiceImp implements EventService{
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
-			
 		if (event.getEventTitle()==null || /*event.getEventType()==null*/ typeId == 0 ||/* event.getEventTargetGroup()==null*/ targetId == 0||
 				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null ||
 				event.getEventStartTime()==null || event.getEventEndtTime()==null || event.getEventSummary()==null ||
@@ -100,7 +99,12 @@ public class EventServiceImp implements EventService{
 		
 		List<Event> event = null;
 		event =  eventDao.searchByWord(word);
-		return event;
+
+		if(event != null) {
+			return event;
+			}else {
+				throw new NotFoundException("MSG009");
+			}
 	}
 	
 }
