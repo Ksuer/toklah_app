@@ -78,5 +78,9 @@ public class User {
     @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ticketNumber")
 	@JsonIgnore
     private Set <Ticket> ticket;
+	
+	@OneToOne(mappedBy = "user",targetEntity = Transaction.class, cascade =CascadeType.ALL,  fetch = FetchType.EAGER)
+	private Transaction transaction;
+	
 
 }

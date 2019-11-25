@@ -82,6 +82,10 @@ public class UserServiceImp implements UserService {
 			throw new ConflictException("MSG003");
 		}
 		
+		if (userDao.findByFirstName(user.getFirstName()) != null & userDao.findByFatherName(user.getFatherName()) != null & userDao.findByGrandFatherName(user.getGrandFatherName()) != null & userDao.findByLastName(user.getLastName()) != null) {
+			throw new ConflictException("MSG012");
+		}
+		
 		//set lastpayment to today for the free trail  
 		Calendar cal = Calendar.getInstance();
 		String myFormat = "yyyy-MM-dd" ;
@@ -106,11 +110,11 @@ public class UserServiceImp implements UserService {
 			if (user == null) {
 				throw new NotFoundException("User not found");
 			} else {
-				//final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
-				//final String token = jwtTokenUtil.generateToken(userDetails);
+				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
+				final String token = jwtTokenUtil.generateToken(userDetails);
 				
 				if (login.getMobileOrEmail().equals(user.getEmail()) || login.getMobileOrEmail().equals(user.getMobileNumber()) & passwordEncoder.matches(login.getPassword(), user.getPassword())) {
-					//user.setToken(token);
+					user.setToken(token);
 					return user;
 
 				} else {
