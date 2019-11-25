@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +47,10 @@ public class BucketController {
 		this.amazonClient = amazonClient;
 	}
 
+	HttpHeaders responseHeaders = new HttpHeaders();
+
 	@PostMapping("/{userId}/uploadUserImage")
-	public String uploadUserImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int userId) throws Exception {
+	public  ResponseEntity<?> uploadUserImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int userId) throws Exception {
     	
 		User user= userDao.findOne(userId);
 		String url = amazonClient.uploadFileUser(file);
@@ -53,11 +58,11 @@ public class BucketController {
 		userImageDao.save(userImage);
 		user.setUserImage(url);
 		userDao.save(user);
-		return user.getUserImage();
+		return new ResponseEntity<>(user.getUserImage(), responseHeaders, HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/{eventId}/uploadEventImage")
-	public String uploadEventImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int eventId) throws Exception {
+	public  ResponseEntity<?>  uploadEventImage(@RequestPart(value = "file") MultipartFile file, @PathVariable int eventId) throws Exception {
     	
 		String url = amazonClient.uploadFileEvent(file);
 		Event event= eventDao.findOne(eventId);
@@ -65,7 +70,8 @@ public class BucketController {
 		eventImageDao.save(eventImage);
 		event.setEventImage(url);
 		eventDao.save(event);
-		return event.getEventImage();
+		return new ResponseEntity<>(event.getEventImage(), responseHeaders, HttpStatus.CREATED);
+
 	}
 	
 }
