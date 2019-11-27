@@ -31,11 +31,11 @@ public class EventServiceImp implements EventService{
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
 		if (event.getEventTitle()==null || /*event.getEventType()==null*/ typeId == 0 ||/* event.getEventTargetGroup()==null*/ targetId == 0||
-				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null ||
-				event.getEventStartTime()==null || event.getEventEndtTime()==null || event.getEventSummary()==null ||
+				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null || event.getEventStartTime()==null ||
+				event.getEventEndtTime()==null || event.getEventOrganizerNumber()==0 || event.getEventSummary()==null ||
 				event.getCompanyName()==null || event.getCompanyActivityType()==null || event.getCompanyCrNumber()==null ||
 				event.getCompanyEmail()==null || event.getContactNumber1()==null/* || event.getContactNumber2()==null*/) {
-			throw new BadRequestException("MSG001");
+			throw new BadRequestException("MSG001"); 
 		} else {
 			if(event.getEventReward() == 0) {
 				event.setIsVolunteering(true);
