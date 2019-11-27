@@ -110,7 +110,7 @@ public class UserServiceImp implements UserService {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			User user = userDao.mobileOremail(login.getMobileOrEmail());
 			if (user == null) {
-				throw new NotFoundException("User not found");
+				throw new NotFoundException("MSG013");
 			} else {
 				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
 				final String token = jwtTokenUtil.generateToken(userDetails);
@@ -133,11 +133,11 @@ public class UserServiceImp implements UserService {
 	@Override
 	public User otp(Login login) {
 		if (login.getMobileOrEmail().isEmpty()) {
-			throw new BadRequestException("Missing email or mobile #");
+			throw new BadRequestException("MSG001");
 		} else {
 			User user = userDao.mobileOremail(login.getMobileOrEmail());
 			if (user == null) {
-				throw new NotFoundException("User not found");
+				throw new NotFoundException("MSG013");
 			}
 			if(user.getIsLock() == false) {
 				throw new ConflictException("MSG003");
@@ -185,7 +185,7 @@ public class UserServiceImp implements UserService {
 				if (checkEmail == null) {
 					newUser.setEmail(user.getEmail());
 				} else {
-					throw new UnAuthorizedException("another user with this email");
+					throw new UnAuthorizedException("MSG003");
 				}
 			}
 		}
@@ -196,7 +196,7 @@ public class UserServiceImp implements UserService {
 				if (checkMobile == null) {
 					newUser.setMobileNumber(user.getMobileNumber());
 				} else {
-					throw new UnAuthorizedException("another user with this mobile number");
+					throw new UnAuthorizedException("MSG018");
 				}
 			}
 		}
@@ -281,7 +281,7 @@ public class UserServiceImp implements UserService {
 		//check if the last payment is less than 30 days
 		try {
 			 if (!isValid(user.getLastPayment())) {
-				 throw new LockedException("please renew your account");
+				 throw new LockedException("MSG015");
 			 }
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -292,7 +292,7 @@ public class UserServiceImp implements UserService {
 		List<Ticket> userTickets = ticketDao.getTicketbyUserAndEvent(userId, eventId);
 		
 		if (userTickets.size() > 0) {
-			throw new ConflictException("You have ticket for this event");
+			throw new ConflictException("MSG016");
 		}
 
 		// check if the the tickets are full
@@ -370,6 +370,7 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public void restorePassword(String oldPass, String newPass, int userId) {
+		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		User user = new User();
 		user = userDao.findOne(userId);
@@ -389,10 +390,15 @@ public class UserServiceImp implements UserService {
 	@Override
 	public void emailchangePassword(SentEmail email) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		
+		if (email == null) {
+			throw new BadRequestException("MSG001");
+		}
+		
 		User user = new User();
 		user = userDao.findByEmail(email.getEmail());
 		if (user == null) {
-			throw new NotFoundException("No one with his email");
+			throw new NotFoundException("MSG006");
 		} else {
 			String password = RandomStringUtils.random(8,
 					"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
@@ -403,7 +409,7 @@ public class UserServiceImp implements UserService {
 				user.setPassword(passwordEncoder.encode(password));
 				userDao.save(user);
 			} catch (Exception e) {
-				throw new BadRequestException("Error while sending the password" + e.getMessage());
+				throw new BadRequestException("MSG014" + e.getMessage());
 			}
 		}
 
