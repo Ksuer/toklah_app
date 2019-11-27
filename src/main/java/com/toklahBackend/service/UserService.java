@@ -44,6 +44,8 @@ public interface UserService {
 
 	User otp(Login login);
 
+	Page<Ticket> getAllTicketsByUseryId(int userId, Pageable pageable);
+
 	//List<Ticket> getAllTickets();
 
 	//List<Ticket> getAllTickets(int userId);

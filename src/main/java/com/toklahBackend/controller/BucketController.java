@@ -58,7 +58,7 @@ public class BucketController {
 		userImageDao.save(userImage);
 		user.setUserImage(url);
 		userDao.save(user);
-		return new ResponseEntity<>(user.getUserImage(), responseHeaders, HttpStatus.CREATED);
+		return new ResponseEntity<>(user, responseHeaders, HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/{eventId}/uploadEventImage")
@@ -70,7 +70,7 @@ public class BucketController {
 		eventImageDao.save(eventImage);
 		event.setEventImage(url);
 		eventDao.save(event);
-		return new ResponseEntity<>(event.getEventImage(), responseHeaders, HttpStatus.CREATED);
+		return new ResponseEntity<>(event, responseHeaders, HttpStatus.CREATED);
 
 	}
 	

@@ -36,7 +36,7 @@ public class Transaction {
 	private int transactionId;
 	@Column(unique = true, length = 100)
 	private String transactionNumber;
-	private String accountType;
+	private Boolean isPremium;
 	private String transactionDate;
 	private String transactionTime;
 	private float price;

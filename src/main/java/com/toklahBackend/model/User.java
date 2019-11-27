@@ -65,7 +65,7 @@ public class User {
 	private String lastPayment;
 	private Boolean isLock;  // true -> if the user didn't do the otp
 	private Boolean isPaid; //true -> if the user pay for the type
-
+	private Boolean isPremium; //true -> if the user has Premium account
 
 	@CreationTimestamp
 	@Column(name = "creationdate")

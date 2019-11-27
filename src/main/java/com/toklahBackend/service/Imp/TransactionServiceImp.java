@@ -47,6 +47,7 @@ public class TransactionServiceImp implements TransactionService {
 			e.printStackTrace();
 		}
 		user.setIsPaid(true);
+		user.setIsPremium(transaction.getIsPremium());
 		userDao.save(user);
 		return newTransaction;
 	}
@@ -114,45 +115,5 @@ public class TransactionServiceImp implements TransactionService {
 
 	    return newDate;
 	}
-	
-//	public String addTime (String date) throws ParseException {
-//		String myFormat = "yyyy-MM-dd";
-//		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
-//		String newDate ;
-//		if (date.isEmpty()) {
-//			date = "2000-01-01";  // think of something better when no date 
-//		}
-//		Date lastPayment = sdf.parse(date);
-//		
-//		Calendar todayPlus30 = Calendar.getInstance();
-//		todayPlus30.setTime(lastPayment);
-//		todayPlus30.add(Calendar.DAY_OF_YEAR, 30);
-//		todayPlus30.set(Calendar.HOUR_OF_DAY, 0);
-//		todayPlus30.set(Calendar.MINUTE, 0);
-//		todayPlus30.set(Calendar.SECOND, 0);
-//		todayPlus30.set(Calendar.MILLISECOND, 0);
-//		
-//		// the account not expire we add 1 month above the 30 day he has from the expire date
-//		if (todayPlus30.after(Calendar.getInstance()) ) {
-//			Calendar extra30Day = todayPlus30;
-//			extra30Day.add(Calendar.MONTH, 1);
-//			extra30Day.set(Calendar.HOUR_OF_DAY, 0);
-//			extra30Day.set(Calendar.MINUTE, 0);
-//			extra30Day.set(Calendar.SECOND, 0);
-//			extra30Day.set(Calendar.MILLISECOND, 0);
-//			newDate = sdf.format(extra30Day);
-//		}else { // the account expire we add 1 month to ftom todday
-//			Calendar extra30Day = Calendar.getInstance();
-//			extra30Day.add(Calendar.MONTH, 1);
-//			extra30Day.set(Calendar.HOUR_OF_DAY, 0);
-//			extra30Day.set(Calendar.MINUTE, 0);
-//			extra30Day.set(Calendar.SECOND, 0);
-//			extra30Day.set(Calendar.MILLISECOND, 0);
-//			newDate = sdf.format(extra30Day);
-//		}
-//		
-//		System.out.println("addTime = " + newDate);
-//		
-//		return newDate;
-//	}
+
 }

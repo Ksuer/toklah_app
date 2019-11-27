@@ -94,6 +94,7 @@ public class UserServiceImp implements UserService {
 		user.setIsLock(true);
 		 user.setIsPaid(true);
 		user.setPassword(hashedPass);
+		user.setIsPremium(false);
 		userDao.save(user);
 		return user;
 	}
@@ -286,13 +287,10 @@ public class UserServiceImp implements UserService {
 			e.printStackTrace();
 		}
 		
-		if (countTicket >= event.getEventOrganizerNumber()) {
-			throw new ConflictException("MSG008");
-		}
-
 		Ticket myTicket = new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(),
 				event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
 		List<Ticket> userTickets = ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		
 		if (userTickets.size() > 0) {
 			throw new ConflictException("You have ticket for this event");
 		}
@@ -315,10 +313,19 @@ public class UserServiceImp implements UserService {
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
-
+	@Override
+	public Page<Ticket> getAllTicketsByUseryId(int userId, Pageable pageable) {
+		Page<Ticket> ticket = ticketDao.getTicketbyUserId(userId, pageable);
+		if (ticket != null) {
+			return ticket;
+		} else {
+			throw new NotFoundException("no ticket");
+		}
+	}
+	
 	@Override
 	public Page<Ticket> getticketsByUseryId(int userId, Pageable pageable) {
-		Page<Ticket> ticket = ticketDao.getTicketbyUserId(userId, pageable);
+		Page<Ticket> ticket = ticketDao.getValidTicketbyUserId(userId, pageable);
 		if (ticket != null) {
 			return ticket;
 		} else {
