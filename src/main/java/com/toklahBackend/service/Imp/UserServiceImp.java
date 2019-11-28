@@ -163,15 +163,11 @@ public class UserServiceImp implements UserService {
 		}
 
 		if (user.getFatherName() != null) {
-			newUser.setFatherName(user.getFirstName());
+			newUser.setFatherName(user.getFatherName());
 		}
 
 		if (user.getGrandFatherName() != null) {
-			newUser.setGrandFatherName(user.getFirstName());
-		}
-
-		if (user.getLastName() != null) {
-			newUser.setLastName(user.getLastName());
+			newUser.setGrandFatherName(user.getGrandFatherName());
 		}
 
 		if (user.getLastName() != null) {
@@ -235,6 +231,10 @@ public class UserServiceImp implements UserService {
 
 		if (user.getLanguage() != null) {
 			newUser.setLanguage(user.getLanguage());
+		}
+		
+		if (user.getSkill() != null) {
+			newUser.setSkill(user.getSkill());
 		}
 
 		if (user.getAboutMe() != null) {
