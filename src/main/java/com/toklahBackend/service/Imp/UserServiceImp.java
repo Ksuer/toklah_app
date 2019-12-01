@@ -144,11 +144,11 @@ public class UserServiceImp implements UserService {
 			}else {
 				final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getMobileOrEmail());
 				final String token = jwtTokenUtil.generateToken(userDetails);
-				if (user.getIsLock()) {
-					throw new LockedException("MSG004");
-				}
+		
 				user.setIsLock(false);
+				userDao.save(user);
 				user.setToken(token);
+				
 				return user;
 			}
 		}

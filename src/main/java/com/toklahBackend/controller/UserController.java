@@ -146,11 +146,4 @@ public class UserController {
 	
 	}
 	
-	/*@RequestMapping(value ="/{userId}/addimage",  method = RequestMethod.POST, consumes = "multipart/form-data" ,
-            produces = { "application/json", "application/xml" })
-	@ResponseBody
-	public ResponseEntity<?> addimage(@PathVariable int userId, @RequestParam("file") List<MultipartFile> file) {
-			return new ResponseEntity<>(userServiceImp.addImage(file, userId), responseHeaders, HttpStatus.OK);
-	}*/
-	
 }
