@@ -9,6 +9,7 @@ import lombok.Setter;
 public class ChangePassword {
 
 	private int userId;
+	private int adminId;
 	private String oldPassword;
 	private String newPassword;
 	

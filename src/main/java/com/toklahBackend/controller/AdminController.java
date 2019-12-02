@@ -1,6 +1,5 @@
 package com.toklahBackend.controller;
 
-import javax.ws.rs.HeaderParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toklahBackend.model.Admin;
+import com.toklahBackend.model.ChangePassword;
 import com.toklahBackend.model.Login;
 import com.toklahBackend.service.Imp.AdminServiceImp;
 
@@ -43,17 +43,36 @@ public class AdminController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> log(@RequestBody Login login)  {
-		Admin admin= adminServiceImp.login(login);
-		if(admin == null) {
-			return new ResponseEntity<>("admin not found", HttpStatus.NOT_FOUND);
-		}else {
-			return new ResponseEntity<>(admin,HttpStatus.OK);
-		}
+		return new ResponseEntity<>( adminServiceImp.login(login),HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getAdmin", method = RequestMethod.GET)
+	@RequestMapping(value = "/getprofile", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> getAdmin(@RequestHeader("Authorization") String token){
-	return new ResponseEntity<>(adminServiceImp.getAdminByToken(token),HttpStatus.OK);
+	public ResponseEntity<?> getadmin(@RequestHeader (name="Authorization") String token) {
+		return new ResponseEntity<>(adminServiceImp.getAdminByToken(token), HttpStatus.OK);
+		}
+	
+	@RequestMapping(value = "/{eventId}/acceptEventRequest", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> accepteventrequest(@PathVariable int eventId) {
+		//return new ResponseEntity<>(adminServiceImp.acceptEventRequest(eventId), HttpStatus.OK);
+		adminServiceImp.accepteventrequest(eventId);
+		return new ResponseEntity<>("event request accepted", HttpStatus.OK);
+
 	}
+	
+	@RequestMapping(value = "/{adminId}/editAdmin", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> editaccount(@PathVariable int adminId, @RequestBody Admin admin) throws Exception {
+		return new ResponseEntity<>(adminServiceImp.editAdmin(adminId, admin), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> changepassword(@RequestBody ChangePassword changePassword) {
+		adminServiceImp.changePassword(changePassword.getOldPassword(), changePassword.getNewPassword(),
+				changePassword.getAdminId());
+		return new ResponseEntity<>("password changed successfully", HttpStatus.OK);
+	}
+
 }

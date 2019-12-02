@@ -14,5 +14,8 @@ public interface AdminDao extends CrudRepository<Admin, Integer>{
 	@Query("SELECT a FROM Admin a where (a.mobile = :mobileOremail or a.email = :mobileOremail) AND a.password = :password")
 	Admin login(@Param("mobileOremail")String mobileOremail,@Param("password") String password);
 
+	Admin findByEmail(@Param("email") String email);
 
+	Admin findByMobile(@Param("mobile") String mobile);
+	
 }

@@ -14,5 +14,11 @@ public interface AdminService {
 	Admin addAdmins(Admin admin, int priority) throws Exception;
 
 	Admin getAdminByToken(String token);
-	
+
+	void accepteventrequest(int eventId, boolean isValid);
+
+	Admin editAdmin(int adminId, Admin admin);
+
+	void changePassword(String oldPassword, String newPassword, int adminId);
+
 }
