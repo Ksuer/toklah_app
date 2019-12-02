@@ -1,21 +1,12 @@
 package com.toklahBackend.service.Imp;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.toklahBackend.dao.AdminDao;
 import com.toklahBackend.dao.EventDao;
@@ -28,8 +19,6 @@ import com.toklahBackend.exception.UnAuthorizedException;
 import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
-import com.toklahBackend.model.Ticket;
-import com.toklahBackend.model.User;
 import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.service.AdminService;
 
@@ -126,38 +115,21 @@ public class AdminServiceImp implements AdminService{
 		if( admin != null) {
 			return admin;
 		}else {
-			throw new NotFoundException("error");
+			throw new NotFoundException();
 		}
 		
 	}
 
-	/*@Override
-	public Admin getAdmin(int adminId) {
-		
-		Admin admin = adminDao.findOne(adminId);
-		if (admin == null) {
-			throw new NotFoundException();
-		}
-	
-		return admin;
-	}*/
-
 	@Override
-	public Admin getAdmin(String token) {
-		
-		String userName = jwtTokenUtil.getUsernameFromToken(token);
-		Admin admin = adminDao.mobileOremail(userName);
-		if (admin == null) {
-			throw new NotFoundException();
-		}
-	
-		return admin;
-	}
-
-	@Override
-	public void accepteventrequest(int eventId) {
+	public void accepteventrequest(int eventId, boolean isValid) {
 		Event event = eventDao.findOne(eventId);
-		event.setIsValid(true);
+		try {
+		if( event != null) {
+			event.setIsValid(isValid);
+		}
+		}catch(Exception ex) {
+			throw new BadRequestException("event stauts not changed");
+		}
 	}
 
 	@Override
