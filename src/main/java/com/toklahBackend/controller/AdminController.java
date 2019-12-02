@@ -1,5 +1,7 @@
 package com.toklahBackend.controller;
 
+import javax.ws.rs.HeaderParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,13 +36,13 @@ public class AdminController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> register(@RequestBody Admin admin) throws Exception {
+	public ResponseEntity<?> register(@RequestBody Admin admin){
 	return new ResponseEntity<>(adminServiceImp.register(admin),HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> log(@RequestBody Login login) throws Exception {
+	public ResponseEntity<?> log(@RequestBody Login login)  {
 		Admin admin= adminServiceImp.login(login);
 		if(admin == null) {
 			return new ResponseEntity<>("admin not found", HttpStatus.NOT_FOUND);
@@ -48,9 +51,9 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = "/getAdmin/{token}/", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAdmin", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> getAdmin(@PathVariable("token") String token) throws Exception {
+	public ResponseEntity<?> getAdmin(@RequestHeader("Authorization") String token){
 	return new ResponseEntity<>(adminServiceImp.getAdminByToken(token),HttpStatus.OK);
 	}
 }

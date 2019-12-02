@@ -36,14 +36,14 @@ public class AdminServiceImp implements AdminService{
 	private UserDetailsService adminDetailsService;
 	
 	@Override
-	public Admin register(Admin admin) throws Exception {
+	public Admin register(Admin admin) {
 		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPass = passwordEncoder.encode(admin.getPassword());
 		
 		if (adminDao.mobileOremail(admin.getEmail()) != null
 				|| adminDao.mobileOremail(admin.getMobile()) != null) {
-			throw new Exception("this admin already registered");
+			throw new ConflictException("this admin already registered");
 		}else {
 			Admin newAdmin = new Admin();
 			admin.setPassword(hashedPass);
@@ -54,12 +54,12 @@ public class AdminServiceImp implements AdminService{
 	}
 	
 	@Override
-	public Admin addAdmins(Admin admin, int priority) throws Exception {
+	public Admin addAdmins(Admin admin, int priority) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPass = passwordEncoder.encode(admin.getPassword());
 		if (adminDao.mobileOremail(admin.getEmail()) != null
 				|| adminDao.mobileOremail(admin.getMobile()) != null) {
-			throw new Exception("this admin already registered");
+			throw new ConflictException("this admin already registered");
 		}else if(priority < 1 ) {
 			throw new ConflictException("wrong type");
 		}else {
