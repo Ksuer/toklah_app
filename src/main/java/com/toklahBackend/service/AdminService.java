@@ -15,10 +15,12 @@ public interface AdminService {
 
 	Admin getAdminByToken(String token);
 
-	void accepteventrequest(int eventId, boolean isValid);
+	String acceptEventRequest(int eventId, boolean isValid);
 
 	Admin editAdmin(int adminId, Admin admin);
 
 	void changePassword(String oldPassword, String newPassword, int adminId);
+
+	String changeEventType(int eventId, boolean isPremium);
 
 }

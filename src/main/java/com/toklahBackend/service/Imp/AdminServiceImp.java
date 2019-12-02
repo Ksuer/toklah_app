@@ -121,15 +121,35 @@ public class AdminServiceImp implements AdminService{
 	}
 
 	@Override
-	public void accepteventrequest(int eventId, boolean isValid) {
+	public String acceptEventRequest(int eventId, boolean isValid) {
 		Event event = eventDao.findOne(eventId);
 		try {
-		if( event != null) {
-			event.setIsValid(isValid);
-		}
+			if( event != null) {
+				event.setIsValid(isValid);
+				eventDao.save(event);
+			}else {
+				throw new BadRequestException("event stauts not changed");
+			}
 		}catch(Exception ex) {
 			throw new BadRequestException("event stauts not changed");
 		}
+		return "event stauts changed";
+	}
+	
+	@Override
+	public String changeEventType(int eventId, boolean isPremium) {
+		Event event = eventDao.findOne(eventId);
+		try {
+			if( event != null) {
+				event.setIsPremium(isPremium);
+				eventDao.save(event);
+			}else {
+				throw new BadRequestException("event type not changed");
+			}
+		}catch(Exception ex) {
+			throw new BadRequestException("event type not changed");
+		}
+		return "event type changed";
 	}
 
 	@Override

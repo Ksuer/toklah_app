@@ -55,11 +55,17 @@ public class AdminController {
 	@RequestMapping(value = "/{eventId}/acceptEventRequest/{isValid}", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> accepteventrequest(@PathVariable("eventId") int eventId,@PathVariable("isValid") boolean isValid) {
-		//return new ResponseEntity<>(adminServiceImp.acceptEventRequest(eventId), HttpStatus.OK);
-		adminServiceImp.accepteventrequest(eventId, isValid);
-		return new ResponseEntity<>("event request accepted", HttpStatus.OK);
+		return new ResponseEntity<>(adminServiceImp.acceptEventRequest(eventId, isValid), HttpStatus.OK);
 
 	}
+	
+	@RequestMapping(value = "/{eventId}/changeeventtype/{isPremium}", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> changeEventType(@PathVariable("eventId") int eventId,@PathVariable("isPremium") boolean isPremium) {
+		return new ResponseEntity<>(adminServiceImp.changeEventType(eventId, isPremium), HttpStatus.OK);
+
+	}
+	
 	
 	@RequestMapping(value = "/{adminId}/editAdmin", method = RequestMethod.PUT)
 	@ResponseBody
