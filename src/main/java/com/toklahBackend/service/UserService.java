@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
@@ -45,6 +46,8 @@ public interface UserService {
 	User otp(Login login);
 
 	Page<Ticket> getAllTicketsByUseryId(int userId, Pageable pageable);
+
+	User Addimage(MultipartFile file, int userId);
 
 	//List<Ticket> getAllTickets();
 

@@ -1,5 +1,6 @@
 package com.toklahBackend.service.Imp;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +10,17 @@ import javax.persistence.Enumerated;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.dao.EventDao;
-
+import com.toklahBackend.dao.EventImageDao;
 import com.toklahBackend.exception.BadRequestException;
 import com.toklahBackend.exception.NotFoundException;
 
 import com.toklahBackend.model.Event;
+import com.toklahBackend.model.EventImage;
+import com.toklahBackend.service.AmazonClient;
 import com.toklahBackend.service.EventService;
 import com.toklahBackend.unit.EventTarget;
 import com.toklahBackend.unit.EventType;
@@ -25,7 +30,11 @@ import com.toklahBackend.unit.EventType;
 public class EventServiceImp implements EventService{
 
 	@Autowired
-	EventDao eventDao;
+	private EventDao eventDao;
+	@Autowired
+	private EventImageDao eventImageDao;
+	@Autowired
+	private AmazonClient amazonClient;
 
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
@@ -105,6 +114,26 @@ public class EventServiceImp implements EventService{
 			}else {
 				throw new NotFoundException("MSG009");
 			}
+	}
+	
+	@Override
+	public Event addImage(MultipartFile file, int eventId) {
+		String url = "";
+		Event event= eventDao.findOne(eventId);
+		if(event != null) {
+		try {
+			url = amazonClient.uploadFileEvent(file);
+		} catch (IOException e) {
+		}
+		
+		EventImage eventImage = new EventImage( file.getOriginalFilename() ,  url , event);
+		eventImageDao.save(eventImage);
+		event.setEventImage(url);
+		eventDao.save(event);
+		}else {
+			throw new NotFoundException("MSG013");
+		}
+		return event;
 	}
 	
 }

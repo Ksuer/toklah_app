@@ -1,5 +1,6 @@
 package com.toklahBackend.service.Imp;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.dao.EventDao;
@@ -32,8 +34,10 @@ import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
 import com.toklahBackend.model.Ticket;
 import com.toklahBackend.model.User;
+import com.toklahBackend.model.UserImage;
 import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.sendEmail.SendEmail;
+import com.toklahBackend.service.AmazonClient;
 import com.toklahBackend.service.UserService;
 
 @Component
@@ -51,6 +55,9 @@ public class UserServiceImp implements UserService {
 	@Autowired
 	UserImageDao userImageDao;
 
+	@Autowired
+	private AmazonClient amazonClient;
+	
 	@Autowired
 	SendEmail serviceSendEmail;
 
@@ -428,6 +435,26 @@ public class UserServiceImp implements UserService {
 		return user.getVolunteeringEventNumber();
 	}
 	
+	@Override
+	public User Addimage(MultipartFile file, int userId) {
+		User user= userDao.findOne(userId);
+		if ( user != null) {
+		String url = "";
+		try {
+			url = amazonClient.uploadFileUser(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		UserImage userImage = new UserImage(file.getOriginalFilename() ,  url , user);
+		userImageDao.save(userImage);
+		user.setUserImage(url);
+		userDao.save(user);
+		}else {
+			throw new NotFoundException("MSG013");
+		}
+		return user;
+	}
+	
 	public Boolean isValid(String date) throws ParseException {
 		Boolean isV = false;
 		String myFormat = "yyyy-MM-dd";
@@ -451,5 +478,7 @@ public class UserServiceImp implements UserService {
 		System.out.println("isV = " + isV);
 		return isV;
 	}
+	
+	
 
 }

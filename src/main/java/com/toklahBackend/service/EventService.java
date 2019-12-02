@@ -2,6 +2,8 @@ package com.toklahBackend.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.toklahBackend.model.Event;
 
 public interface EventService {
@@ -16,4 +18,6 @@ public interface EventService {
 	List<Event> getAllVolunteerEvent();
 
 	List<Event> getAllRegEvent();
+
+	Event addImage(MultipartFile file, int eventId);
 }
