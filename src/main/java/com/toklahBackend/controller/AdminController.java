@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +46,11 @@ public class AdminController {
 		}else {
 			return new ResponseEntity<>(admin,HttpStatus.OK);
 		}
-		
 	}
 
+	@RequestMapping(value = "/getAdmin/{token}/", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> getAdmin(@PathVariable("token") String token) throws Exception {
+	return new ResponseEntity<>(adminServiceImp.getAdminByToken(token),HttpStatus.OK);
+	}
 }

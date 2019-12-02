@@ -12,5 +12,7 @@ public interface AdminService {
 	Admin login(Login login) throws NotFoundException, Exception;
 
 	Admin addAdmins(Admin admin, int priority) throws Exception;
+
+	Admin getAdminByToken(String token);
 	
 }

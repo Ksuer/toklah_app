@@ -96,5 +96,18 @@ public class AdminServiceImp implements AdminService{
 			}
 		}
 	}
+	
+	@Override
+	public Admin getAdminByToken(String token) {
+		String userName = jwtTokenUtil.getUsernameFromToken(token);
+	
+		Admin admin = adminDao.mobileOremail(userName);
+		if( admin != null) {
+			return admin;
+		}else {
+			throw new NotFoundException("error");
+		}
+		
+	}
 
 }
