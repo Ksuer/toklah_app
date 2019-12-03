@@ -121,7 +121,7 @@ public class AdminServiceImp implements AdminService{
 	}
 
 	@Override
-	public String acceptEventRequest(int eventId, boolean isValid) {
+	public Event acceptEventRequest(int eventId, boolean isValid) {
 		Event event = eventDao.findOne(eventId);
 		try {
 			if( event != null) {
@@ -133,11 +133,11 @@ public class AdminServiceImp implements AdminService{
 		}catch(Exception ex) {
 			throw new BadRequestException("event stauts not changed");
 		}
-		return "event stauts changed";
+		return event;
 	}
 	
 	@Override
-	public String changeEventType(int eventId, boolean isPremium) {
+	public Event changeEventType(int eventId, boolean isPremium) {
 		Event event = eventDao.findOne(eventId);
 		try {
 			if( event != null) {
@@ -149,7 +149,7 @@ public class AdminServiceImp implements AdminService{
 		}catch(Exception ex) {
 			throw new BadRequestException("event type not changed");
 		}
-		return "event type changed";
+		return event;
 	}
 
 	@Override

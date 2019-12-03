@@ -1,6 +1,7 @@
 package com.toklahBackend.service;
 
 import com.toklahBackend.model.Admin;
+import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
 
 import javassist.NotFoundException;
@@ -15,12 +16,12 @@ public interface AdminService {
 
 	Admin getAdminByToken(String token);
 
-	String acceptEventRequest(int eventId, boolean isValid);
+	Event acceptEventRequest(int eventId, boolean isValid);
 
 	Admin editAdmin(int adminId, Admin admin);
 
 	void changePassword(String oldPassword, String newPassword, int adminId);
 
-	String changeEventType(int eventId, boolean isPremium);
+	Event changeEventType(int eventId, boolean isPremium);
 
 }
