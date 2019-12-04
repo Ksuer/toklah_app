@@ -1,7 +1,11 @@
 package com.toklahBackend.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.ChangePassword;
+import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
+import com.toklahBackend.model.SentEmail;
+import com.toklahBackend.model.Ticket;
+import com.toklahBackend.model.User;
 import com.toklahBackend.service.Imp.AdminServiceImp;
+import com.toklahBackend.service.Imp.EventServiceImp;
+import com.toklahBackend.service.Imp.UserServiceImp;
+
+import javassist.NotFoundException;
 
 
 @CrossOrigin
@@ -27,6 +39,10 @@ public class AdminController {
 	
 	@Autowired
 	private AdminServiceImp adminServiceImp;
+	@Autowired
+	private EventServiceImp eventServiceImp;
+	@Autowired
+	private UserServiceImp userServiceImp;
 	
 	public AdminController ( AdminServiceImp adminServiceImp ) {
 		this.adminServiceImp = adminServiceImp;
@@ -79,6 +95,43 @@ public class AdminController {
 		adminServiceImp.changePassword(changePassword.getOldPassword(), changePassword.getNewPassword(),
 				changePassword.getAdminId());
 		return new ResponseEntity<>("password changed successfully", HttpStatus.OK);
+	}
+	@RequestMapping(value = "/forgotpassword",  method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> forgotPassword(@RequestBody SentEmail email) throws Exception{
+		adminServiceImp.emailchangePassword(email);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getAllRegEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
+	}
+	@RequestMapping(value = "/getallevents", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Event>> getallEvent() {
+		return new ResponseEntity<>(eventServiceImp.getAllEvent(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getallusers", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<User>> getAllUser() {
+		return new ResponseEntity<>(userServiceImp.getAllUser(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/{userId}/getAllTickets", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable) throws NotFoundException {
+		
+		return new ResponseEntity<Page<Ticket>>(userServiceImp.getticketsByUseryId(userId, pageable), responseHeaders, HttpStatus.OK);
+
 	}
 
 }
