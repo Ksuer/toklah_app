@@ -416,7 +416,7 @@ public class UserServiceImp implements UserService {
 				user.setPassword(passwordEncoder.encode(password));
 				userDao.save(user);
 			} catch (Exception e) {
-				throw new BadRequestException("MSG014" + e.getMessage());
+				throw new BadRequestException("MSG014");
 			}
 		}
 

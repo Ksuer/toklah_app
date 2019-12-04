@@ -29,7 +29,7 @@ static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.clas
     public UserDetails loadUserByUsername(String phoneOremail) throws UsernameNotFoundException {
         Admin account = adminDao.mobileOremail(phoneOremail);
         if (account == null) {
-            throw new UsernameNotFoundException("User '" + phoneOremail + "' not found");
+            throw new UsernameNotFoundException("Admin '" + phoneOremail + "' not found");
         }
         
        

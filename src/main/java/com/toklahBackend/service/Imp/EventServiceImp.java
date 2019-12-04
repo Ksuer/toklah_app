@@ -55,11 +55,11 @@ public class EventServiceImp implements EventService{
 			event.setIsValid(true); // in production false 
 			
 			switch(typeId) {
-			case 1: event.setEventType(EventType.EVENT); break; 
-			case 2: event.setEventType(EventType.ART); break; 
+			case 1: event.setEventType(EventType.EXPOSITION); break; 
+			case 2: event.setEventType(EventType.ARTS); break; 
 			case 3:	event.setEventType(EventType.MUSIC); break; 
-			case 4: event.setEventType(EventType.MUSIC_EVENT); break; 
-			case 5: event.setEventType(EventType.EDICATION); break; 
+			case 4: event.setEventType(EventType.CONCERT); break; 
+			case 5: event.setEventType(EventType.EDUCATIONAL); break; 
 			case 6: event.setEventType(EventType.OTHER); break; 
 			default:
 			}

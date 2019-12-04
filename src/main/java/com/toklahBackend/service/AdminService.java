@@ -2,6 +2,7 @@ package com.toklahBackend.service;
 
 import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.Login;
+import com.toklahBackend.model.SentEmail;
 
 import javassist.NotFoundException;
 
@@ -22,5 +23,7 @@ public interface AdminService {
 	void changePassword(String oldPassword, String newPassword, int adminId);
 
 	String changeEventType(int eventId, boolean isPremium);
+
+	void emailchangePassword(SentEmail email);
 
 }

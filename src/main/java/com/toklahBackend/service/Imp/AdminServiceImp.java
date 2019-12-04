@@ -1,5 +1,6 @@
 package com.toklahBackend.service.Imp;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,10 @@ import com.toklahBackend.exception.UnAuthorizedException;
 import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
+import com.toklahBackend.model.SentEmail;
+import com.toklahBackend.model.User;
 import com.toklahBackend.security.JwtTokenUtil;
+import com.toklahBackend.sendEmail.SendEmail;
 import com.toklahBackend.service.AdminService;
 
 
@@ -40,6 +44,8 @@ public class AdminServiceImp implements AdminService{
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
+	@Autowired
+	SendEmail serviceSendEmail;
 	
 	@Autowired
 	@Qualifier("customAdminDetailsService")
@@ -109,11 +115,16 @@ public class AdminServiceImp implements AdminService{
 	
 	@Override
 	public Admin getAdminByToken(String token) {
-		String userName = jwtTokenUtil.getUsernameFromToken(token);
-	
-		Admin admin = adminDao.mobileOremail(userName);
-		if( admin != null) {
-			return admin;
+		if (token != null) {
+			token = token.replace("Bearer ", "");
+			String userName = jwtTokenUtil.getUsernameFromToken(token);
+			
+			Admin admin = adminDao.mobileOremail(userName);
+			if( admin != null) {
+				return admin;
+			}else {
+				throw new NotFoundException();
+			}
 		}else {
 			throw new NotFoundException();
 		}
@@ -203,7 +214,34 @@ public class AdminServiceImp implements AdminService{
 				throw new UnAuthorizedException("MSG011");
 			}
 		}
+	}
+	
+	@Override
+	public void emailchangePassword(SentEmail email) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		
+		if (email == null) {
+			throw new BadRequestException("MSG001");
+		}
+		
+		Admin admin = new Admin();
+		admin = adminDao.findByEmail(email.getEmail());
+		if (admin == null) {
+			throw new NotFoundException("MSG006");
+		} else {
+			String password = RandomStringUtils.random(8,
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+			String text = "Your new password is " + password;
+			try {
+				String title = "Forgot your password? ";
+				serviceSendEmail.sendMail(email.getEmail(), text, title);
+				admin.setPassword(passwordEncoder.encode(password));
+				adminDao.save(admin);
+			} catch (Exception e) {
+				throw new BadRequestException("MSG014");
+			}
+		}
+
 	}
 
 }
