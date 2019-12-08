@@ -44,8 +44,10 @@ public class AdminController {
 	@Autowired
 	private UserServiceImp userServiceImp;
 	
-	public AdminController ( AdminServiceImp adminServiceImp ) {
+	public AdminController ( AdminServiceImp adminServiceImp, EventServiceImp eventServiceImp, UserServiceImp userServiceImp ) {
 		this.adminServiceImp = adminServiceImp;
+		this.eventServiceImp = eventServiceImp;
+		this.userServiceImp = userServiceImp;
 	}
 
 	HttpHeaders responseHeaders = new HttpHeaders();

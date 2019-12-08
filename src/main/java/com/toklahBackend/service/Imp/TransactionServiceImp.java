@@ -34,9 +34,21 @@ public class TransactionServiceImp implements TransactionService {
 	@Override
 	public Transaction create (int userId, Transaction transaction) {
 		User user = userDao.findOne(userId); 
+		Calendar today = Calendar.getInstance();
+		String currentTime;
+		String currentDate;
 		Transaction newTransaction = new Transaction();
 		newTransaction = transaction;
+		 
+		String myFormat = "yyyy-MM-dd";
+		String timeFormat = "hh:mm a";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+		SimpleDateFormat tsdf = new SimpleDateFormat(timeFormat);
+		currentDate = sdf.format(today.getTime());
+		currentTime = tsdf.format(today.getTime());
 		
+		newTransaction.setTransactionDate(currentDate);
+		newTransaction.setTransactionTime(currentTime);
 		newTransaction.setUserId(user.getUserId());
 		transactionDao.save(newTransaction);
 		
