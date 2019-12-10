@@ -200,6 +200,11 @@ public class AdminServiceImp implements AdminService{
 	
 	@Override
 	public void changePassword(String oldPassword, String newPassword, int adminId) {
+		
+		if (oldPassword == null || newPassword == null) {
+			throw new BadRequestException("MSG001");
+		}
+		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		Admin admin = new Admin();
 		admin = adminDao.findOne(adminId);

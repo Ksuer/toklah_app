@@ -1,6 +1,7 @@
 package com.toklahBackend.service.Imp;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -199,7 +200,7 @@ public class UserServiceImp implements UserService {
 				if (checkMobile == null) {
 					newUser.setMobileNumber(user.getMobileNumber());
 				} else {
-					throw new UnAuthorizedException("MSG018");
+					throw new UnAuthorizedException("MSG017");
 				}
 			}
 		}
@@ -317,6 +318,7 @@ public class UserServiceImp implements UserService {
 
 		myTicket.setUser(user);
 		myTicket.setIsCanceled(false);
+		countTicket= countTicket+1;
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
@@ -347,7 +349,16 @@ public class UserServiceImp implements UserService {
 		ticket.setIsCanceled(true);
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(ticket.getEventId());
-
+		
+		String pattern = "yyyy-MM-dd";
+		DateFormat df = new SimpleDateFormat(pattern);
+		Date today = Calendar.getInstance().getTime();    
+		String todayDate = df.format(today);
+		
+		if(df.format(event.getEventDate()).compareTo(todayDate)<0){
+			throw new BadRequestException("MSG010");
+		}
+		
 		if (event.getIsVolunteering() == false) {
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber() - 1);
 		}
@@ -377,6 +388,10 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public void restorePassword(String oldPass, String newPass, int userId) {
+		
+		if (oldPass == null || newPass == null) {
+			throw new BadRequestException("MSG001");
+		}
 		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		User user = new User();
