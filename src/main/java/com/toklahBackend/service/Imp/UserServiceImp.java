@@ -350,15 +350,12 @@ public class UserServiceImp implements UserService {
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(ticket.getEventId());
 		
-		String pattern = "yyyy-MM-dd";
-		DateFormat df = new SimpleDateFormat(pattern);
-		Date today = Calendar.getInstance().getTime();    
-		String todayDate = df.format(today);
-		
-		if(df.format(event.getEventDate()).compareTo(todayDate)<0){
-			throw new BadRequestException("MSG010");
+		Calendar kk = Calendar.getInstance();
+		kk.setTime(event.getEventDate());
+		if (kk.before(Calendar.getInstance())) {
+			throw new ConflictException("MSG010");
 		}
-		
+
 		if (event.getIsVolunteering() == false) {
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber() - 1);
 		}
