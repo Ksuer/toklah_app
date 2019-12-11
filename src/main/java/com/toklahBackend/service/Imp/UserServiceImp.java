@@ -320,6 +320,7 @@ public class UserServiceImp implements UserService {
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
+	
 	@Override
 	public Page<Ticket> getAllTicketsByUseryId(int userId, Pageable pageable) {
 		Page<Ticket> ticket = ticketDao.getTicketbyUserId(userId, pageable);
@@ -347,6 +348,12 @@ public class UserServiceImp implements UserService {
 		ticket.setIsCanceled(true);
 		User user = userDao.findOne(userId);
 		Event event = eventDao.findOne(ticket.getEventId());
+		
+		Calendar kk = Calendar.getInstance();
+		kk.setTime(event.getEventDate());
+		if (kk.before(Calendar.getInstance())) {
+			throw new ConflictException("MSG010");
+		}
 
 		if (event.getIsVolunteering() == false) {
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber() - 1);
