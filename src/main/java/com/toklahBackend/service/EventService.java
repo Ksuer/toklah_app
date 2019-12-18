@@ -15,9 +15,13 @@ public interface EventService {
 
 	List<Event> search(String word);
 
-	List<Event> getAllVolunteerEvent();
+	List<Event> getAllVolunteerEvent(String token);
 
-	List<Event> getAllRegEvent();
+	List<Event> getAllRegEvent(String token);
 
 	Event addImage(MultipartFile file, int eventId);
+
+	List<Event> getAllAdminRegEvent();
+
+	List<Event> getAllAdminVolunteerEvent();
 }

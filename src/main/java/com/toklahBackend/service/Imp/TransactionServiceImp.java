@@ -55,6 +55,7 @@ public class TransactionServiceImp implements TransactionService {
 		//update last payment date and change the is paid to true; 
 		try {
 			user.setLastPayment(addTime(user.getLastPayment()));
+			user.setExpirePayment(addTime(user.getLastPayment()));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

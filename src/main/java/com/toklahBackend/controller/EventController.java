@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,14 +73,14 @@ public class EventController {
 	
 	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
-		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+	public ResponseEntity<List<Event>> getAllVolunteerEvent(@RequestHeader (name="Authorization") String token) {
+		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(token), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<Event>> getAllRegEvent() {
-		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
+	public ResponseEntity<List<Event>> getAllRegEvent(@RequestHeader (name="Authorization") String token) {
+		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(token), HttpStatus.OK);
 	}
 
 }

@@ -146,12 +146,9 @@ public class UserController {
 	
 	}
 	
-	@RequestMapping(value = "/getRemainingSpot/{eventId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{userId}/checkrenewpackage", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> getRemainingSpot(@PathVariable int eventId) {
-		
-		return new ResponseEntity<>(userServiceImp.getRemainingSpot(eventId), HttpStatus.OK);
-
+	public ResponseEntity<?> checkRenewPackage(@PathVariable int userId) {	
+		return new ResponseEntity<>(userServiceImp.renewPackage(userId), HttpStatus.OK);
 	}
-	
 }

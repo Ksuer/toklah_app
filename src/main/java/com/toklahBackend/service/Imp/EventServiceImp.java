@@ -15,11 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.toklahBackend.dao.EventDao;
 import com.toklahBackend.dao.EventImageDao;
+import com.toklahBackend.dao.UserDao;
 import com.toklahBackend.exception.BadRequestException;
 import com.toklahBackend.exception.NotFoundException;
-
+import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.model.EventImage;
+import com.toklahBackend.model.User;
+import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.service.AmazonClient;
 import com.toklahBackend.service.EventService;
 import com.toklahBackend.unit.EventTarget;
@@ -35,6 +38,10 @@ public class EventServiceImp implements EventService{
 	private EventImageDao eventImageDao;
 	@Autowired
 	private AmazonClient amazonClient;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	UserDao userDao;
 
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
@@ -53,6 +60,7 @@ public class EventServiceImp implements EventService{
 			}
 			event.setIsPremium(false);
 			event.setIsValid(true); // in production false 
+			event.setRemainingSpot(event.getEventOrganizerNumber());
 			
 			switch(typeId) {
 			case 1: event.setEventType(EventType.EXPOSITION); break; 
@@ -84,13 +92,59 @@ public class EventServiceImp implements EventService{
 	}
 	
 	@Override
-	public List<Event> getAllVolunteerEvent() {
+	public List<Event> getAllVolunteerEvent(String token) {
+		if (token != null) {
+			token = token.replace("Bearer ", "");
+			String userName = jwtTokenUtil.getUsernameFromToken(token);
+			
+			User user = userDao.mobileOremail(userName);
+			if( user != null) {
+				if (user.getIsPremium() == false) {
+					return eventDao.getAllBasicVolunteerEvent();
+				}else {
+					return eventDao.getAllVolunteerEvent();
+				}
+				
+			}else {
+				throw new NotFoundException();
+			}
+		}else {
+			throw new NotFoundException();
+		}
+		
+	}
+	
+	@Override
+	public List<Event> getAllRegEvent(String token) {
+		if (token != null) {
+			token = token.replace("Bearer ", "");
+			String userName = jwtTokenUtil.getUsernameFromToken(token);
+			
+			User user = userDao.mobileOremail(userName);
+			if( user != null) {
+				if (user.getIsPremium() == false) {
+					return eventDao.getAllBasicRegEvent();
+				}else {
+					return eventDao.getAllRegEvent();
+				}
+				
+			}else {
+				throw new NotFoundException();
+			}
+		}else {
+			throw new NotFoundException();
+		}
+	}	
+	
+	@Override
+	public List<Event> getAllAdminVolunteerEvent() {
 		return eventDao.getAllVolunteerEvent();
 	}
 	
 	@Override
-	public List<Event> getAllRegEvent() {
+	public List<Event> getAllAdminRegEvent() {
 		return eventDao.getAllRegEvent();
+
 	}
 	
 	@Override

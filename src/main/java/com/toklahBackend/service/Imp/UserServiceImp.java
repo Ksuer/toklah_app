@@ -99,8 +99,14 @@ public class UserServiceImp implements UserService {
 		String myFormat = "yyyy-MM-dd" ;
 		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 		user.setLastPayment(sdf.format(cal.getTime()));
+		cal.add(Calendar.MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		user.setExpirePayment(sdf.format(cal.getTime()));
 		user.setIsLock(true);
-		 user.setIsPaid(true);
+		user.setIsPaid(true);
 		user.setPassword(hashedPass);
 		user.setIsPremium(false);
 		userDao.save(user);
@@ -297,7 +303,7 @@ public class UserServiceImp implements UserService {
 		
 		Ticket myTicket = new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(),
 				event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
-		List<Ticket> userTickets = ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		List<Ticket> userTickets = ticketDao.getValidTicketbyUserAndEvent(userId, eventId);
 		
 		if (userTickets.size() > 0) {
 			throw new ConflictException("MSG016");
@@ -307,6 +313,13 @@ public class UserServiceImp implements UserService {
 		if (countTicket >= event.getEventOrganizerNumber()) {
 			throw new ConflictException("MSG008");
 		}
+		Ticket canceledTicket = ticketDao.getTicketbyUserAndEvent(userId, eventId);
+		
+		if (canceledTicket != null ) {
+			myTicket = canceledTicket;
+		}
+		
+		
 
 		if (event.getIsVolunteering() == false) {
 			user.setOrganizingEventNumber(user.getOrganizingEventNumber() + 1);
@@ -318,10 +331,10 @@ public class UserServiceImp implements UserService {
 
 		myTicket.setUser(user);
 		myTicket.setIsCanceled(false);
-		countTicket= countTicket+1;
 		
-		event.setRemainingSpot(event.getEventOrganizerNumber()-countTicket);
+		event.setRemainingSpot(event.getRemainingSpot() - 1);
 		
+		eventDao.save(event);
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
@@ -367,7 +380,9 @@ public class UserServiceImp implements UserService {
 		if (event.getIsVolunteering() == true) {
 			user.setVolunteeringEventNumber(user.getVolunteeringEventNumber() - 1);
 		}
-
+		event.setRemainingSpot(event.getRemainingSpot() + 1);
+		
+		eventDao.save(event);
 		userDao.save(user);
 		ticketDao.save(ticket);
 
@@ -471,6 +486,21 @@ public class UserServiceImp implements UserService {
 		return user;
 	}
 	
+	@Override
+	public Boolean renewPackage(int userId) {
+		User user = userDao.findOne(userId);
+		if (user == null) {
+			throw new NotFoundException();
+		}else {
+			try {
+				//if there time expire it will true
+				return !isValid(user.getExpirePayment());
+			} catch (ParseException e) {
+				throw new NotFoundException("time error");
+			}
+		}
+	}
+	
 	public Boolean isValid(String date) throws ParseException {
 		Boolean isV = false;
 		String myFormat = "yyyy-MM-dd";
@@ -482,7 +512,7 @@ public class UserServiceImp implements UserService {
 		
 		Calendar todayPlus30 = Calendar.getInstance();
 		todayPlus30.setTime(lastPayment);
-		todayPlus30.add(Calendar.DAY_OF_YEAR, 30);
+		todayPlus30.add(Calendar.MONTH, 1);
 		todayPlus30.set(Calendar.HOUR_OF_DAY, 0);
 		todayPlus30.set(Calendar.MINUTE, 0);
 		todayPlus30.set(Calendar.SECOND, 0);
@@ -493,13 +523,6 @@ public class UserServiceImp implements UserService {
 		}
 		System.out.println("isV = " + isV);
 		return isV;
-	}
-
-	@Override
-	public int getRemainingSpot(int eventId) {
-		Event event = eventDao.findOne(eventId);
-		int remainingSpot = event.getRemainingSpot();
-		return remainingSpot;
 	}
 	
 }

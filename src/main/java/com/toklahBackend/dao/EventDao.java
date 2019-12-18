@@ -19,4 +19,10 @@ public interface EventDao extends CrudRepository <Event, Integer>{
 	@Query("SELECT e FROM Event e where e.isVolunteering = false")
 	List<Event> getAllRegEvent();
 	
+	@Query("SELECT e FROM Event e  where e.isVolunteering = true and e.isPremium = false")
+	List<Event> getAllBasicVolunteerEvent();
+	
+	@Query("SELECT e FROM Event e where e.isVolunteering = false and e.isPremium = false")
+	List<Event> getAllBasicRegEvent();
+	
 }

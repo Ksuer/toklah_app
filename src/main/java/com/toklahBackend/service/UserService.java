@@ -49,7 +49,7 @@ public interface UserService {
 
 	User Addimage(MultipartFile file, int userId);
 
-	int getRemainingSpot(int eventId);
+	Boolean renewPackage(int userId);
 
 	//List<Ticket> getAllTickets();
 

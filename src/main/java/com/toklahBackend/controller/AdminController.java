@@ -108,13 +108,13 @@ public class AdminController {
 	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Event>> getAllVolunteerEvent() {
-		return new ResponseEntity<>(eventServiceImp.getAllVolunteerEvent(), HttpStatus.OK);
+		return new ResponseEntity<>(eventServiceImp.getAllAdminVolunteerEvent(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getregevents", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Event>> getAllRegEvent() {
-		return new ResponseEntity<>(eventServiceImp.getAllRegEvent(), HttpStatus.OK);
+		return new ResponseEntity<>(eventServiceImp.getAllAdminRegEvent(), HttpStatus.OK);
 	}
 	@RequestMapping(value = "/getallevents", method = RequestMethod.GET)
 	@ResponseBody
