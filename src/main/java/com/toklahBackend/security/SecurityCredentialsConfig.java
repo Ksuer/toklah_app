@@ -46,7 +46,7 @@ class AdminSecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
 	        .authorizeRequests()
 	
 		    // allow requests 
-		    .antMatchers(ADMIN_LOGIN,ADMIN_SIGN_UP_URL,ADMIN_forgotPassword,
+		    .antMatchers(ADMIN_LOGIN,ADMIN_SIGN_UP_URL,ADMIN_forgotPassword,FORGOTUSERNAME,
 		    		//for swagger
 		    		"/v2/api-docs",
 	                "/configuration/ui",
