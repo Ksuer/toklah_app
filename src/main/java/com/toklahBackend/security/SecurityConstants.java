@@ -7,9 +7,13 @@ public class SecurityConstants {
     public static final String HEADER_STRING = "Authorization";
     public static final String SIGN_UP_URL = "/user/register/**";
     public static final String LOGIN = "/user/login/**";
+    public static final String FORGOTPASSWORD ="/user/forgotpassword/**";
+    public static final String OTP ="/user/otp/**";
+    public static final String REGISTER_EVENT = "/**/addEvent/**";
     public static final String ADMIN_SIGN_UP_URL = "/admin/register/**";
     public static final String ADMIN_LOGIN = "/admin/login/**";
     public static final String ADMIN_forgotPassword = "/admin/forgotpassword/**";
-    public static final String FORGOTUSERNAME ="/**";
-    public static final String FORGOTPASSWORD ="/api/v1/user/**";
+    public static final String OPEN_EVERYTHING ="/**";
+    public static final String UPLOAD_IMAGE ="/image/**";
+   
 }
