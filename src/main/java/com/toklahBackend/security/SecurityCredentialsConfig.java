@@ -33,6 +33,9 @@ class AdminSecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		http.cors();
+		
 		http.requestMatchers().antMatchers("/admin/**")
 		
 		    .and().csrf().disable()
