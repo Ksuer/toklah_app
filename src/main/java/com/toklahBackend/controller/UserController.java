@@ -146,4 +146,12 @@ public class UserController {
 	
 	}
 	
+	@RequestMapping(value = "/getRemainingSpot/{eventId}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> getRemainingSpot(@PathVariable int eventId) {
+		
+		return new ResponseEntity<>(userServiceImp.getRemainingSpot(eventId), HttpStatus.OK);
+
+	}
+	
 }

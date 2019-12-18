@@ -319,6 +319,9 @@ public class UserServiceImp implements UserService {
 		myTicket.setUser(user);
 		myTicket.setIsCanceled(false);
 		countTicket= countTicket+1;
+		
+		event.setRemainingSpot(event.getEventOrganizerNumber()-countTicket);
+		
 		ticketDao.save(myTicket);
 		return myTicket;
 	}
@@ -490,7 +493,12 @@ public class UserServiceImp implements UserService {
 		System.out.println("isV = " + isV);
 		return isV;
 	}
-	
-	
 
+	@Override
+	public int getRemainingSpot(int eventId) {
+		Event event = eventDao.findOne(eventId);
+		int remainingSpot = event.getRemainingSpot();
+		return remainingSpot;
+	}
+	
 }

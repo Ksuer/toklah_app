@@ -56,6 +56,7 @@ public class Event {
 	private int eventOrganizerNumber;
 	private float eventReward;
 	private String eventSummary;
+	private int remainingSpot;
 	private Boolean isVolunteering;
 	private Boolean isPremium;
 	private Boolean isValid;

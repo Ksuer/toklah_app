@@ -49,6 +49,8 @@ public interface UserService {
 
 	User Addimage(MultipartFile file, int userId);
 
+	int getRemainingSpot(int eventId);
+
 	//List<Ticket> getAllTickets();
 
 	//List<Ticket> getAllTickets(int userId);
