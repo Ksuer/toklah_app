@@ -11,7 +11,10 @@ import com.toklahBackend.model.Event;
 public interface EventDao extends CrudRepository <Event, Integer>{
 
 	@Query("SELECT e FROM Event e where e.eventTitle Like CONCAT('%',:word,'%')")
-	List<Event> searchByWord(@Param("word") String word);
+	List<Event> searchByPremiumUser(@Param("word") String word);
+	
+	@Query("SELECT e FROM Event e where e.isPremium = false and e.eventTitle Like CONCAT('%',:word,'%')")
+	List<Event> searchByBasicUser(@Param("word") String word);
 	
 	@Query("SELECT e FROM Event e  where e.isVolunteering = true")
 	List<Event> getAllVolunteerEvent();

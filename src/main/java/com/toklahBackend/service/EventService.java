@@ -13,7 +13,7 @@ public interface EventService {
 
 	Event getEvent(int eventId) ;
 
-	List<Event> search(String word);
+	List<Event> search(String word, String token);
 
 	List<Event> getAllVolunteerEvent(String token);
 

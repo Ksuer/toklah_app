@@ -158,16 +158,43 @@ public class EventServiceImp implements EventService{
 	}
 
 	@Override
-	public List<Event> search(String word) {
+	public List<Event> search(String word, String token) {
 		
-		List<Event> event = null;
-		event =  eventDao.searchByWord(word);
+		if (token != null) {
+			token = token.replace("Bearer ", "");
+			String userName = jwtTokenUtil.getUsernameFromToken(token);
+			
+			List<Event> event = null;
+			
+			User user = userDao.mobileOremail(userName);
+			if( user != null) {
+				if (user.getIsPremium() == false) {					
+					event =  eventDao.searchByBasicUser(word);
 
-		if(event != null) {
-			return event;
+					if(event != null) {
+						return event;
+						}else {
+							throw new NotFoundException("MSG009");
+						}
+					
+				}else {
+					event =  eventDao.searchByPremiumUser(word);
+
+					if(event != null) {
+						return event;
+						}else {
+							throw new NotFoundException("MSG009");
+						}
+				}
+				
 			}else {
-				throw new NotFoundException("MSG009");
+				throw new NotFoundException();
 			}
+		}else {
+			throw new NotFoundException();
+		}
+		
+		
 	}
 	
 	@Override

@@ -67,8 +67,8 @@ public class EventController {
 	
 	@RequestMapping(value ="/search",  method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> search(@Param("word") String word) {
-			return new ResponseEntity<>(eventServiceImp.search(word), responseHeaders, HttpStatus.OK);
+	public ResponseEntity<?> search(@Param("word") String word, @RequestHeader (name="Authorization") String token) {
+			return new ResponseEntity<>(eventServiceImp.search(word, token), responseHeaders, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getvolunteerevents", method = RequestMethod.GET)
