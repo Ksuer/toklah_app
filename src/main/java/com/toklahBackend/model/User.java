@@ -61,7 +61,6 @@ public class User {
 	private String aboutMe;
 	private int organizingEventNumber;
 	private int volunteeringEventNumber;
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private String lastPayment;
 	private String expirePayment;
 	private Boolean isLock;  // true -> if the user didn't do the otp
