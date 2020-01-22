@@ -16,7 +16,7 @@ import com.toklahBackend.service.Imp.EventServiceImp;
 import com.toklahBackend.service.Imp.UserServiceImp;
 
 @RestController
-@RequestMapping("/image/")
+@RequestMapping("/image")
 public class BucketController {
 
 	 @Autowired

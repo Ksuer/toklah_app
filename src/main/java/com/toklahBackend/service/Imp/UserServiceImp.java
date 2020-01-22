@@ -112,6 +112,47 @@ public class UserServiceImp implements UserService {
 		userDao.save(user);
 		return user;
 	}
+	
+	@Override
+	public User registerv2(User user) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPass = passwordEncoder.encode(user.getPassword());
+
+		// checking empty fields
+		if (user.getFirstName() == null || user.getFatherName() == null || user.getGrandFatherName() == null
+				|| user.getLastName() == null || user.getEmail() == null || user.getPassword() == null
+				|| user.getCountryKey() == null || user.getMobileNumber() == null
+				|| user.getGender() == null) {
+			throw new BadRequestException("MSG001");
+		}
+
+		// checking if the user register before
+		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
+			throw new ConflictException("MSG003");
+		}
+		
+		if (userDao.findByFirstName(user.getFirstName()) != null & userDao.findByFatherName(user.getFatherName()) != null & userDao.findByGrandFatherName(user.getGrandFatherName()) != null & userDao.findByLastName(user.getLastName()) != null) {
+			throw new ConflictException("MSG012");
+		}
+		
+		//set lastpayment to today for the free trail  
+		Calendar cal = Calendar.getInstance();
+		String myFormat = "yyyy-MM-dd" ;
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+		user.setLastPayment(sdf.format(cal.getTime()));
+		cal.add(Calendar.MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		user.setExpirePayment(sdf.format(cal.getTime()));
+		user.setIsLock(true);
+		user.setIsPaid(true);
+		user.setPassword(hashedPass);
+		user.setIsPremium(false);
+		userDao.save(user);
+		return user;
+	}
 
 	@Override
 	public User login(Login login) {

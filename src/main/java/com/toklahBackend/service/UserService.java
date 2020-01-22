@@ -51,6 +51,8 @@ public interface UserService {
 
 	Boolean renewPackage(int userId);
 
+	User registerv2(User user);
+
 	//List<Ticket> getAllTickets();
 
 	//List<Ticket> getAllTickets(int userId);

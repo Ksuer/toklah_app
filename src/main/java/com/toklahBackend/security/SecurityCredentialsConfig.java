@@ -103,7 +103,7 @@ class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		
 		    // allow requests 
-		    .antMatchers(SIGN_UP_URL,FORGOTPASSWORD,LOGIN,REGISTER_EVENT,OTP,UPLOAD_IMAGE,
+		    .antMatchers(SIGN_UP_URL,SIGN_UP2_URL, FORGOTPASSWORD,LOGIN,REGISTER_EVENT,OTP,UPLOAD_IMAGE,
 		    		//for swagger
 		    		"/v2/api-docs",
 	                "/configuration/ui",

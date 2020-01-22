@@ -51,6 +51,13 @@ public class UserController {
 
 	}
 	
+	@RequestMapping(value = "/v2/register", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> registerv2(@RequestBody User user) throws Exception {
+		return new ResponseEntity<>(userServiceImp.registerv2(user), HttpStatus.OK);
+
+	}
+	
 	@RequestMapping(value = "/login" , method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> log(@RequestBody Login login) throws Exception {
