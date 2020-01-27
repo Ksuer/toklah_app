@@ -27,4 +27,8 @@ public interface AdminService {
 
 	void emailchangePassword(SentEmail email);
 
+	Event editEvent(Event event, int eventId, int targetId, int typeId);
+
+	Boolean deleteEventRequest(int eventId);
+
 }

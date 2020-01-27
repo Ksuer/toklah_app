@@ -87,7 +87,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/{adminId}/editAdmin", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> editaccount(@PathVariable("adminId") int adminId, @RequestBody Admin admin) throws Exception {
+	public ResponseEntity<?> editaccount(@PathVariable("adminId") int adminId, @RequestBody Admin admin) {
 		return new ResponseEntity<>(adminServiceImp.editAdmin(adminId, admin), HttpStatus.OK);
 	}
 	
@@ -100,7 +100,7 @@ public class AdminController {
 	}
 	@RequestMapping(value = "/forgotpassword",  method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> forgotPassword(@RequestBody SentEmail email) throws Exception{
+	public ResponseEntity<?> forgotPassword(@RequestBody SentEmail email) {
 		adminServiceImp.emailchangePassword(email);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -130,10 +130,25 @@ public class AdminController {
 	
 	@RequestMapping(value = "/{userId}/getAllTickets", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable) throws NotFoundException {
+	public ResponseEntity<Page<Ticket>> getuserTickets(@PathVariable int userId, Pageable pageable){
 		
 		return new ResponseEntity<Page<Ticket>>(userServiceImp.getticketsByUseryId(userId, pageable), responseHeaders, HttpStatus.OK);
 
+	}
+	
+	@RequestMapping(value = "/{typeId}/{targetId}/{eventId}/editEvent", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> editEvent(@RequestBody Event event, @PathVariable int targetId, @PathVariable int eventId,
+			@PathVariable int typeId) {
+		return new ResponseEntity<>(adminServiceImp.editEvent(event, eventId, targetId, typeId), responseHeaders, HttpStatus.OK);
+	
+	}
+	
+	@RequestMapping(value = "/{eventId}/deleteEvent", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> deleteEvent(  @PathVariable int eventId) {
+		return new ResponseEntity<>(adminServiceImp.deleteEventRequest(eventId), responseHeaders, HttpStatus.OK);
+	
 	}
 
 }

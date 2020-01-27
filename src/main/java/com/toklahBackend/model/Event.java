@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.ws.rs.DefaultValue;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.mapping.Set;

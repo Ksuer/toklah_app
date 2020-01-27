@@ -26,5 +26,8 @@ public interface TicketDao extends CrudRepository<Ticket, Integer> {
 	
 	@Query("SELECT count(eventId) FROM Ticket t where t.eventId= :eventId and t.isCanceled = false")
 	int countUsedTicket(@Param("eventId") int eventId);
+	
+	@Query("SELECT t FROM Ticket t  where t.eventId= :eventId")
+	List<Ticket> getTicketByEvent(@Param("eventId") int eventId);
 
 }

@@ -46,20 +46,17 @@ public class EventServiceImp implements EventService{
 	@Override
 	public Event addEvent(Event event, int targetId, int typeId){
 		Event newEvent= new Event();
-		if (event.getEventTitle()==null || /*event.getEventType()==null*/ typeId == 0 ||/* event.getEventTargetGroup()==null*/ targetId == 0||
+		if (event.getEventTitle()==null || typeId == 0 ||targetId == 0|| 
 				event.getLat()==null|| event.getLng()==null || event.getEventDate()==null || event.getEventStartTime()==null ||
 				event.getEventEndtTime()==null || event.getEventOrganizerNumber()==0 || event.getEventSummary()==null ||
 				event.getCompanyName()==null || event.getCompanyActivityType()==null || event.getCompanyCrNumber()==null ||
-				event.getCompanyEmail()==null || event.getContactNumber1()==null/* || event.getContactNumber2()==null*/) {
+				event.getCompanyEmail()==null || event.getContactNumber1()==null || event.getContactNumber2()==null) {
 			throw new BadRequestException("MSG001"); 
 		} else {
-			if(event.getEventReward() == 0) {
-				event.setIsVolunteering(true);
-			}else {
-				event.setIsVolunteering(false);
-			}
+			event.setEventId(0);
+			event.setIsVolunteering(false);
 			event.setIsPremium(false);
-			event.setIsValid(true); // in production false 
+			event.setIsValid(false); // in production false 
 			event.setRemainingSpot(event.getEventOrganizerNumber());
 			
 			switch(typeId) {
@@ -102,7 +99,7 @@ public class EventServiceImp implements EventService{
 				if (user.getIsPremium() == false) {
 					return eventDao.getAllBasicVolunteerEvent();
 				}else {
-					return eventDao.getAllVolunteerEvent();
+					return eventDao.P_getAllBasicVolunteerEvent();
 				}
 				
 			}else {
@@ -125,7 +122,7 @@ public class EventServiceImp implements EventService{
 				if (user.getIsPremium() == false) {
 					return eventDao.getAllBasicRegEvent();
 				}else {
-					return eventDao.getAllRegEvent();
+					return eventDao.P_getAllBasicRegEvent();
 				}
 				
 			}else {

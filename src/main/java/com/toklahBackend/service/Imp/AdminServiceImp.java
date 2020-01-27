@@ -1,5 +1,7 @@
 package com.toklahBackend.service.Imp;
 
+import java.util.List;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,10 +23,13 @@ import com.toklahBackend.model.Admin;
 import com.toklahBackend.model.Event;
 import com.toklahBackend.model.Login;
 import com.toklahBackend.model.SentEmail;
+import com.toklahBackend.model.Ticket;
 import com.toklahBackend.model.User;
 import com.toklahBackend.security.JwtTokenUtil;
 import com.toklahBackend.sendEmail.SendEmail;
 import com.toklahBackend.service.AdminService;
+import com.toklahBackend.unit.EventTarget;
+import com.toklahBackend.unit.EventType;
 
 
 @Component
@@ -148,6 +153,22 @@ public class AdminServiceImp implements AdminService{
 	}
 	
 	@Override
+	public Boolean deleteEventRequest(int eventId) {
+		Event event = eventDao.findOne(eventId);
+		List<Ticket> ticket = ticketDao.getTicketByEvent(eventId);
+			if( event != null) {
+				if(ticket.size() == 0) {
+					eventDao.delete(event);
+					return true;
+				}else {
+					throw new BadRequestException("Someone has a ticket in this event can not be deleted");
+				}
+			}else {
+				throw new BadRequestException("event not found");
+			}
+	}
+	
+	@Override
 	public Event changeEventType(int eventId, boolean isPremium) {
 		Event event = eventDao.findOne(eventId);
 		try {
@@ -248,5 +269,87 @@ public class AdminServiceImp implements AdminService{
 		}
 
 	}
-
+	
+	@Override
+	public Event editEvent(Event event, int eventId, int targetId, int typeId){
+		Event newEvent= eventDao.findOne(eventId);
+		if (newEvent != null) {
+			switch(typeId) {
+			case 1: newEvent.setEventType(EventType.EXPOSITION); break; 
+			case 2: newEvent.setEventType(EventType.ARTS); break; 
+			case 3:	newEvent.setEventType(EventType.MUSIC); break; 
+			case 4: newEvent.setEventType(EventType.CONCERT); break; 
+			case 5: newEvent.setEventType(EventType.EDUCATIONAL); break; 
+			case 6: newEvent.setEventType(EventType.OTHER); break; 
+			default:
+			}
+			
+			switch(targetId) {
+			case 1: newEvent.setEventTargetGroup(EventTarget.CHILDREN); break; 
+			case 2: newEvent.setEventTargetGroup(EventTarget.FAMELY); break; 
+			case 3:	newEvent.setEventTargetGroup(EventTarget.FEMALE); break; 
+			case 4: newEvent.setEventTargetGroup(EventTarget.MALE); break; 
+			default:
+			}
+			
+			if (event.getEventTitle()!=null) {
+				newEvent.setEventTitle(event.getEventTitle());
+			}
+			if (event.getLat()!=null) {
+				newEvent.setLat(event.getLat());
+			} 
+			if (event.getLng()!=null){
+				newEvent.setLng(event.getLng());
+			}
+			if (event.getEventDate()!=null){
+				newEvent.setEventDate(event.getEventDate());
+			} 
+			if (event.getEventStartTime()!=null){
+				newEvent.setEventStartTime(event.getEventStartTime());
+			}
+			if (event.getEventEndtTime()!=null){
+				newEvent.setEventEndtTime(event.getEventEndtTime());
+			} 
+			if (event.getEventOrganizerNumber()!= -1){
+				newEvent.setEventOrganizerNumber(event.getEventOrganizerNumber());
+			} 
+			if (event.getEventSummary()!=null){
+				newEvent.setEventSummary(event.getEventSummary());
+			}
+			if (event.getCompanyName()!=null){
+				newEvent.setCompanyName(event.getCompanyName());
+			} 
+			if (event.getCompanyActivityType()!=null){
+				newEvent.setCompanyActivityType(event.getCompanyActivityType());
+			} 
+			if (event.getCompanyCrNumber()!=null){
+				newEvent.setCompanyCrNumber(event.getCompanyCrNumber());
+			}
+			if (event.getCompanyEmail()!=null){
+				newEvent.setCompanyEmail(event.getCompanyEmail());
+			} 
+			if (event.getContactNumber1()!=null) {
+				newEvent.setContactNumber1(event.getContactNumber1());
+			}
+			if (event.getEventReward() != -1) {
+				newEvent.setEventReward(event.getEventReward());
+			}
+			if (event.getIsVolunteering() != null) {
+				newEvent.setIsVolunteering(event.getIsVolunteering());
+			}
+			if (event.getIsPremium() !=null) {
+				newEvent.setIsPremium(event.getIsPremium());
+			}
+			if (event.getIsValid() != null) {
+				newEvent.setIsValid(event.getIsValid());
+			}
+			if (event.getRemainingSpot() != -1) {
+				newEvent.setRemainingSpot(event.getRemainingSpot());
+			}
+			newEvent = eventDao.save(newEvent);
+				
+		}
+			return newEvent;
+	}
+	
 }
