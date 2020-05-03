@@ -89,11 +89,7 @@ public class UserServiceImp implements UserService {
 		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
 			throw new ConflictException("MSG003");
 		}
-		
-		if (userDao.findByFirstName(user.getFirstName()) != null & userDao.findByFatherName(user.getFatherName()) != null & userDao.findByGrandFatherName(user.getGrandFatherName()) != null & userDao.findByLastName(user.getLastName()) != null) {
-			throw new ConflictException("MSG012");
-		}
-		
+			
 		//set lastpayment to today for the free trail  
 		Calendar cal = Calendar.getInstance();
 		String myFormat = "yyyy-MM-dd" ;
@@ -130,11 +126,7 @@ public class UserServiceImp implements UserService {
 		if (userDao.findByEmail(user.getEmail()) != null || userDao.mobileOremail(user.getMobileNumber()) != null) {
 			throw new ConflictException("MSG003");
 		}
-		
-		if (userDao.findByFirstName(user.getFirstName()) != null & userDao.findByFatherName(user.getFatherName()) != null & userDao.findByGrandFatherName(user.getGrandFatherName()) != null & userDao.findByLastName(user.getLastName()) != null) {
-			throw new ConflictException("MSG012");
-		}
-		
+				
 		//set lastpayment to today for the free trail  
 		Calendar cal = Calendar.getInstance();
 		String myFormat = "yyyy-MM-dd" ;
@@ -316,15 +308,15 @@ public class UserServiceImp implements UserService {
 		if (user == null) {
 			throw new NotFoundException();
 		}
-		try {
-			//check if the date is older than 30 days and the payment status is true -> it will change the status to false
-			 if (!isValid(user.getLastPayment()) && user.getIsPaid()) {
-				 user.setIsPaid(false);
-				 userDao.save(user);
-			 }
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			//check if the date is older than 30 days and the payment status is true -> it will change the status to false
+//			 if (!isValid(user.getLastPayment()) && user.getIsPaid()) {
+//				 user.setIsPaid(false);
+//				 userDao.save(user);
+//			 }
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
 		return user;
 	}
 
@@ -334,13 +326,13 @@ public class UserServiceImp implements UserService {
 		Event event = eventDao.findOne(eventId);
 		int countTicket = ticketDao.countUsedTicket(eventId);
 		//check if the last payment is less than 30 days
-		try {
-			 if (!isValid(user.getLastPayment())) {
-				 throw new LockedException("MSG015");
-			 }
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			 if (!isValid(user.getLastPayment())) {
+//				 throw new LockedException("MSG015");
+//			 }
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
 		
 		Ticket myTicket = new Ticket(event.getEventId(), event.getEventTitle(), event.getEventDate(),
 				event.getEventStartTime(), event.getEventEndtTime(), user.getMobileNumber(), event.getEventReward());
@@ -562,7 +554,7 @@ public class UserServiceImp implements UserService {
 		if (todayPlus30.after(Calendar.getInstance()) ) {
 			isV = true;
 		}
-		System.out.println("isV = " + isV);
+		System.out.println(todayPlus30 + " isV = " + isV);
 		return isV;
 	}
 	

@@ -33,7 +33,7 @@ public JavaMailSender getJavaMailSender() {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     mailSender.setHost(this.host);
     if (port == null){
-    	mailSender.setPort(25);
+    	mailSender.setPort(465);
     }else {
     	mailSender.setPort(Integer.parseInt(port));
     }
@@ -44,6 +44,7 @@ public JavaMailSender getJavaMailSender() {
     Properties props = mailSender.getJavaMailProperties();
     props.put("mail.transport.protocol", "smtp");
     props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.ssl.enable", "true");
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.debug", "true");
      
